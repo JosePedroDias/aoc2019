@@ -1,0 +1,14 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "(OSX/Linux) Launch",
+      "type": "lldb",
+      "request": "launch",
+      "program": "${workspaceRoot}/target/debug/aoc2019",
+      "preLaunchTask": "build",
+      "args": [],
+      "cwd": "${workspaceRoot}"
+    }
+  ]
+}
