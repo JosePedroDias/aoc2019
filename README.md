@@ -30,3 +30,4 @@ To run the tests for each day do:
 ## Rust references
 
 - <https://doc.rust-lang.org/rust-by-example/index.html>
+- <https://github.com/rust-lang/rustlings/tree/master/exercises>
