@@ -27,24 +27,25 @@ fn at_end(p: &Program) -> bool {
 
 fn step(p: &mut Program) {
     let opcode = p.cells[p.index];
-    if opcode == ADD {
-        let a = p.cells[p.index + 1] as usize;
-        let b = p.cells[p.index + 2] as usize;
+    if opcode == ADD || opcode == MUL {
+        let a = p.cells[p.index + 1];
+        let b = p.cells[p.index + 2];
         let dst = p.cells[p.index + 3] as usize;
-        p.cells[dst] = p.cells[a] + p.cells[b];
-    } else if opcode == MUL {
-        let a = p.cells[p.index + 1] as usize;
-        let b = p.cells[p.index + 2] as usize;
-        let dst = p.cells[p.index + 3] as usize;
-        p.cells[dst] = p.cells[a] * p.cells[b];
+        let result: u32 = match opcode {
+            ADD => a + b,
+            MUL => a * b,
+            _ => panic!("?!"),
+        };
+        p.cells[dst] = result;
     } else if opcode == END {
         panic!("should have not reached step of END!");
     } else {
         panic!("unsupported opcode: {}!", opcode);
     }
+    p.index += 4;
 }
 
-fn run_program(p: &mut Program) {
+fn run_program(mut p: &mut Program) {
     loop {
         if at_end(&p) {
             return;
@@ -61,14 +62,30 @@ pub fn run() {
         index: 0,
         cells: values,
     };
-    let b = at_end(&program);
-    println!("{}", b);
-    step(&mut program);
+
+    // patching program
+    program.cells[1] = 12;
+    program.cells[2] = 2;
+
     run_program(&mut program);
-    println!("{:#?}", program);
+    //println!("{:#?}", program);
 }
 
 #[cfg(test)]
 mod tests {
-    //use super::*;
+    use super::*;
+
+    #[test]
+    fn test_step_1() {
+        let mut p = Program {
+            index: 0,
+            cells: [1, 9, 10, 3, 2, 3, 11, 0, 99, 30, 40, 50].to_vec(),
+        };
+        step(&mut p);
+        assert_eq!(
+            p.cells,
+            [1, 9, 10, 70, 2, 3, 11, 0, 99, 30, 40, 50].to_vec()
+        );
+        assert_eq!(p.index, 4);
+    }
 }

@@ -22,10 +22,10 @@ pub fn run() {
     let values = lines.map(|line| line.parse::<i32>().unwrap());
 
     let result1: i32 = values.clone().map(fuel1).sum();
-    println!("{:#?}", result1);
+    println!("01a: {:#?}", result1);
 
     let result2: i32 = values.map(fuel2).sum();
-    println!("{:#?}", result2);
+    println!("01b: {:#?}", result2);
 }
 
 #[cfg(test)]
