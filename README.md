@@ -22,6 +22,10 @@ To run the tests for each day do:
 
     cargo test
 
+If one wants to see IO (prints) do instead:
+
+    cargo test -- --nocapture
+
 ## Other solutions for reference:
 
 - <https://github.com/BurntSushi/advent-of-code>
