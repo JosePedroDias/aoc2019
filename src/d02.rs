@@ -14,67 +14,61 @@ const ADD: u32 = 1;
 const MUL: u32 = 2;
 const END: u32 = 99;
 
-fn at_end(prog: &Vec<u32>, pos: usize) -> bool {
-    let opcode = prog[pos];
+#[derive(Debug)]
+struct Program {
+    index: usize,
+    cells: Vec<u32>,
+}
+
+fn at_end(p: &Program) -> bool {
+    let opcode: u32 = p.cells[p.index];
     return opcode == END;
 }
 
-fn step(prog: &mut Vec<u32>, pos: usize) -> usize {
-    let opcode = prog[pos];
+fn step(p: &mut Program) {
+    let opcode = p.cells[p.index];
     if opcode == ADD {
-        let arg1 = prog[pos + 1] as usize;
-        let arg2 = prog[pos + 2] as usize;
-        let arg3 = prog[pos + 3] as usize;
-        prog[arg3] = prog[arg1] + prog[arg2];
+        let a = p.cells[p.index + 1] as usize;
+        let b = p.cells[p.index + 2] as usize;
+        let dst = p.cells[p.index + 3] as usize;
+        p.cells[dst] = p.cells[a] + p.cells[b];
     } else if opcode == MUL {
-        let arg1 = prog[pos + 1] as usize;
-        let arg2 = prog[pos + 2] as usize;
-        let arg3 = prog[pos + 3] as usize;
-        prog[arg3] = prog[arg1] * prog[arg2];
+        let a = p.cells[p.index + 1] as usize;
+        let b = p.cells[p.index + 2] as usize;
+        let dst = p.cells[p.index + 3] as usize;
+        p.cells[dst] = p.cells[a] * p.cells[b];
     } else if opcode == END {
         panic!("should have not reached step of END!");
     } else {
         panic!("unsupported opcode: {}!", opcode);
     }
-    return pos + 4;
 }
 
-fn run_prog(prog: &mut Vec<u32>) {
-    let mut i = 0;
+fn run_program(p: &mut Program) {
     loop {
-        if at_end(&prog, i) {
+        if at_end(&p) {
             return;
         }
-        i = step(&mut prog, i); // TODO STUCK HERE
+        step(&mut p);
     }
 }
 
 pub fn run() {
     let file_string: String = std::fs::read_to_string("input/02.txt").unwrap();
     let lines = file_string.split_terminator(',');
-    let mut prog: Vec<u32> = lines.map(|line| line.parse::<u32>().unwrap()).collect();
-
-    // patching program
-    prog[1] = 12;
-    prog[2] = 2;
-
-    //println!("{:#?}", prog);
-    //step(&mut prog, 0);
-
-    run_prog(&mut prog);
-    println!("{:#?}", prog);
+    let values: Vec<u32> = lines.map(|line| line.parse::<u32>().unwrap()).collect();
+    let mut program = Program {
+        index: 0,
+        cells: values,
+    };
+    let b = at_end(&program);
+    println!("{}", b);
+    step(&mut program);
+    run_program(&mut program);
+    println!("{:#?}", program);
 }
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-
-    #[test]
-    fn test_step_1() {
-        let mut p1: Vec<u32> = [1, 9, 10, 3, 2, 3, 11, 0, 99, 30, 40, 50].to_vec();
-        let mut i = 0;
-        i = step(&mut p1, i);
-        assert_eq!(p1, [1, 9, 10, 70, 2, 3, 11, 0, 99, 30, 40, 50].to_vec());
-        assert_eq!(i, 4);
-    }
+    //use super::*;
 }
