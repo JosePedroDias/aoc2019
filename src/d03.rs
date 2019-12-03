@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use std::collections::HashSet;
 
 #[derive(Debug, Clone, Copy)]
@@ -58,25 +59,56 @@ pub fn run() {
         })
         .collect();
 
-    //println!("03a: {:#?}", lines);
+    //println!("03: {:#?}", lines);
 
-    let mut shortest_dist: u32 = 100000; //u32.MAX;
+    {
+        let mut shortest_dist: u32 = std::u32::MAX;
+        let mut set: HashSet<Coord> = HashSet::new();
 
-    let mut set: HashSet<Coord> = HashSet::new();
-    for line in lines.iter() {
-        let coords: Vec<Coord> = expand_line(&line);
-        for coord in coords.iter() {
-            if set.contains(coord) {
-                let dist = manhattan_dist(coord.x, coord.y);
-                if dist < shortest_dist {
-                    shortest_dist = dist;
+        for line in lines.iter() {
+            let coords: Vec<Coord> = expand_line(&line);
+            for coord in coords.iter() {
+                if set.contains(coord) {
+                    let dist = manhattan_dist(coord.x, coord.y);
+                    if dist < shortest_dist {
+                        shortest_dist = dist;
+                    }
                 }
+                set.insert(*coord);
             }
-            set.insert(*coord);
         }
+        println!("03a: {}", shortest_dist);
     }
 
-    println!("03a: {:#?}", shortest_dist);
+    {
+        let mut shortest_combined: usize = std::usize::MAX;
+        let mut map: HashMap<Coord, usize> = HashMap::new();
+
+        for (li, line) in lines.iter().enumerate() {
+            let coords: Vec<Coord> = expand_line(&line);
+            for (ci, coord) in coords.iter().enumerate() {
+                if li == 0 {
+                    if !map.contains_key(coord) {
+                        map.insert(*coord, ci);
+                    }
+                } else {
+                    if map.contains_key(coord) {
+                        match map.get(coord) {
+                            Some(&ci0) => {
+                                let v = ci0 + ci + 2;
+                                if v < shortest_combined {
+                                    shortest_combined = v;
+                                    //println!("{} {} => {}", ci0, ci, shortest_combined);
+                                }
+                            }
+                            _ => (),
+                        }
+                    }
+                }
+            }
+        }
+        println!("03b: {}", shortest_combined);
+    }
 }
 
 #[cfg(test)]
