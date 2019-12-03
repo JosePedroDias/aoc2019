@@ -1,15 +1,3 @@
-/*
-99 - - -   HALT
-1 a b to   ADD
-2 a b to   MUL
-move 4 positions at a time
-
-replace position 1 with the value 12 and
-replace position 2 with the value 2.
-
-What value is left at position 0 after the program halts?
-*/
-
 const ADD: u32 = 1;
 const MUL: u32 = 2;
 const END: u32 = 99;
@@ -26,8 +14,6 @@ fn at_end(p: &Program) -> bool {
 }
 
 fn step(p: &mut Program) -> Result<(), &'static str> {
-    //println!("step #{}", p.index);
-
     let opcode = p.cells[p.index];
     if opcode == ADD || opcode == MUL {
         let src1 = p.cells[p.index + 1] as usize;
@@ -43,10 +29,9 @@ fn step(p: &mut Program) -> Result<(), &'static str> {
 
         /*let op = match opcode {
             ADD => '+',
-            MUL => '*',
-            _ => panic!("?!"),
+            _ => '*',
         };
-        println!("{} <- {} {} {}", result, a, op, b);*/
+        println!("step #{}: {} <- {} {} {}", p.index, result, a, op, b);*/
 
         p.cells[dst] = result;
     } else if opcode == END {
@@ -89,10 +74,7 @@ pub fn run() {
         _ => (),
     };
 
-    //println!("02 ...: {}", res.;
-
     println!("02a: {}", program.cells[0]);
-    //println!("{:#?}", program);
 }
 
 #[cfg(test)]
@@ -134,5 +116,45 @@ mod tests {
             cells: [3500, 9, 10, 70, 2, 3, 11, 0, 99, 30, 40, 50].to_vec(),
         };
         assert!(step(&mut p).is_err());
+    }
+
+    #[test]
+    fn test_run_program_1() {
+        let mut p = Program {
+            index: 0,
+            cells: [1, 0, 0, 0, 99].to_vec(),
+        };
+        assert!(run_program(&mut p).is_ok());
+        assert_eq!(p.cells, [2, 0, 0, 0, 99].to_vec());
+    }
+
+    #[test]
+    fn test_run_program_2() {
+        let mut p = Program {
+            index: 0,
+            cells: [2, 3, 0, 3, 99].to_vec(),
+        };
+        assert!(run_program(&mut p).is_ok());
+        assert_eq!(p.cells, [2, 3, 0, 6, 99].to_vec());
+    }
+
+    #[test]
+    fn test_run_program_3() {
+        let mut p = Program {
+            index: 0,
+            cells: [2, 4, 4, 5, 99, 0].to_vec(),
+        };
+        assert!(run_program(&mut p).is_ok());
+        assert_eq!(p.cells, [2, 4, 4, 5, 99, 9801].to_vec());
+    }
+
+    #[test]
+    fn test_run_program_4() {
+        let mut p = Program {
+            index: 0,
+            cells: [1, 1, 1, 4, 99, 5, 6, 0, 99].to_vec(),
+        };
+        assert!(run_program(&mut p).is_ok());
+        assert_eq!(p.cells, [30, 1, 1, 4, 2, 5, 6, 0, 99].to_vec());
     }
 }
