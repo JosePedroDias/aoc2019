@@ -8,6 +8,13 @@ struct Program {
     cells: Vec<u32>,
 }
 
+fn create_program(values: Vec<u32>) -> Program {
+    return Program {
+        index: 0,
+        cells: values,
+    };
+}
+
 fn at_end(p: &Program) -> bool {
     let opcode: u32 = p.cells[p.index];
     return opcode == END;
@@ -59,10 +66,7 @@ pub fn run() {
     let file_string: String = std::fs::read_to_string("input/02.txt").unwrap();
     let lines = file_string.split_terminator(',');
     let values: Vec<u32> = lines.map(|line| line.parse::<u32>().unwrap()).collect();
-    let mut program = Program {
-        index: 0,
-        cells: values,
-    };
+    let mut program = create_program(values);
 
     // patching program
     program.cells[1] = 12;
@@ -83,10 +87,7 @@ mod tests {
 
     #[test]
     fn test_step_1() {
-        let mut p = Program {
-            index: 0,
-            cells: [1, 9, 10, 3, 2, 3, 11, 0, 99, 30, 40, 50].to_vec(),
-        };
+        let mut p = create_program([1, 9, 10, 3, 2, 3, 11, 0, 99, 30, 40, 50].to_vec());
         assert!(step(&mut p).is_ok());
         assert_eq!(
             p.cells,
@@ -97,10 +98,8 @@ mod tests {
 
     #[test]
     fn test_step_2() {
-        let mut p = Program {
-            index: 4,
-            cells: [1, 9, 10, 70, 2, 3, 11, 0, 99, 30, 40, 50].to_vec(),
-        };
+        let mut p = create_program([1, 9, 10, 70, 2, 3, 11, 0, 99, 30, 40, 50].to_vec());
+        p.index = 4;
         assert!(step(&mut p).is_ok());
         assert_eq!(
             p.cells,
@@ -111,49 +110,35 @@ mod tests {
 
     #[test]
     fn test_step_3() {
-        let mut p = Program {
-            index: 8,
-            cells: [3500, 9, 10, 70, 2, 3, 11, 0, 99, 30, 40, 50].to_vec(),
-        };
+        let mut p = create_program([3500, 9, 10, 70, 2, 3, 11, 0, 99, 30, 40, 50].to_vec());
+        p.index = 8;
         assert!(step(&mut p).is_err());
     }
 
     #[test]
     fn test_run_program_1() {
-        let mut p = Program {
-            index: 0,
-            cells: [1, 0, 0, 0, 99].to_vec(),
-        };
+        let mut p = create_program([1, 0, 0, 0, 99].to_vec());
         assert!(run_program(&mut p).is_ok());
         assert_eq!(p.cells, [2, 0, 0, 0, 99].to_vec());
     }
 
     #[test]
     fn test_run_program_2() {
-        let mut p = Program {
-            index: 0,
-            cells: [2, 3, 0, 3, 99].to_vec(),
-        };
+        let mut p = create_program([2, 3, 0, 3, 99].to_vec());
         assert!(run_program(&mut p).is_ok());
         assert_eq!(p.cells, [2, 3, 0, 6, 99].to_vec());
     }
 
     #[test]
     fn test_run_program_3() {
-        let mut p = Program {
-            index: 0,
-            cells: [2, 4, 4, 5, 99, 0].to_vec(),
-        };
+        let mut p = create_program([2, 4, 4, 5, 99, 0].to_vec());
         assert!(run_program(&mut p).is_ok());
         assert_eq!(p.cells, [2, 4, 4, 5, 99, 9801].to_vec());
     }
 
     #[test]
     fn test_run_program_4() {
-        let mut p = Program {
-            index: 0,
-            cells: [1, 1, 1, 4, 99, 5, 6, 0, 99].to_vec(),
-        };
+        let mut p = create_program([1, 1, 1, 4, 99, 5, 6, 0, 99].to_vec());
         assert!(run_program(&mut p).is_ok());
         assert_eq!(p.cells, [30, 1, 1, 4, 2, 5, 6, 0, 99].to_vec());
     }
