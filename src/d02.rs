@@ -15,6 +15,13 @@ fn create_program(values: Vec<u32>) -> Program {
     };
 }
 
+fn clone_program(p: &Program) -> Program {
+    return Program {
+        index: p.index,
+        cells: p.cells.clone(),
+    };
+}
+
 fn at_end(p: &Program) -> bool {
     let opcode: u32 = p.cells[p.index];
     return opcode == END;
@@ -66,19 +73,43 @@ pub fn run() {
     let file_string: String = std::fs::read_to_string("input/02.txt").unwrap();
     let lines = file_string.split_terminator(',');
     let values: Vec<u32> = lines.map(|line| line.parse::<u32>().unwrap()).collect();
-    let mut program = create_program(values);
+    let start_program = create_program(values);
 
-    // patching program
-    program.cells[1] = 12;
-    program.cells[2] = 2;
+    {
+        let mut program = clone_program(&start_program);
+        program.cells[1] = 12;
+        program.cells[2] = 2;
 
-    let res = run_program(&mut program);
-    match res {
-        Err(s) => println!("program failed with: {}", s),
-        _ => (),
-    };
+        let res = run_program(&mut program);
+        match res {
+            Err(s) => println!("program failed with: {}", s),
+            _ => (),
+        };
 
-    println!("02a: {}", program.cells[0]);
+        println!("02a: {}", program.cells[0]);
+    }
+
+    {
+        const TARGET_OUTPUT: u32 = 19690720;
+        const MAX_V: u32 = 100;
+        for noun in 0..MAX_V {
+            for verb in 0..MAX_V {
+                let mut program = clone_program(&start_program);
+                program.cells[1] = noun;
+                program.cells[2] = verb;
+                let res = run_program(&mut program);
+                match res {
+                    Err(s) => println!("program failed with: {}", s),
+                    _ => (),
+                };
+                if program.cells[0] == TARGET_OUTPUT {
+                    let answer = 100 * noun + verb;
+                    println!("02b: {} (noun: {}, verb: {})", answer, noun, verb);
+                    return;
+                }
+            }
+        }
+    }
 }
 
 #[cfg(test)]

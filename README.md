@@ -26,6 +26,10 @@ If one wants to see IO (prints) do instead:
 
     cargo test -- --nocapture
 
+To measure time spent computing solutions...
+
+    multitime -q -n 10 target/release/aoc2019
+
 ## Other solutions for reference:
 
 - <https://github.com/BurntSushi/advent-of-code>
