@@ -9,22 +9,22 @@ struct Program {
 }
 
 fn create_program(values: Vec<u32>) -> Program {
-    return Program {
+    Program {
         index: 0,
         cells: values,
-    };
+    }
 }
 
 fn clone_program(p: &Program) -> Program {
-    return Program {
+    Program {
         index: p.index,
         cells: p.cells.clone(),
-    };
+    }
 }
 
 fn at_end(p: &Program) -> bool {
     let opcode: u32 = p.cells[p.index];
-    return opcode == END;
+    opcode == END
 }
 
 fn step(p: &mut Program) -> Result<(), &'static str> {
@@ -54,7 +54,7 @@ fn step(p: &mut Program) -> Result<(), &'static str> {
         return Err("unsupported opcode!");
     }
     p.index += 4;
-    return Ok(());
+    Ok(())
 }
 
 fn run_program(mut p: &mut Program) -> Result<(), &'static str> {
@@ -90,7 +90,7 @@ pub fn run() {
     }
 
     {
-        const TARGET_OUTPUT: u32 = 19690720;
+        const TARGET_OUTPUT: u32 = 19_690_720;
         const MAX_V: u32 = 100;
         for noun in 0..MAX_V {
             for verb in 0..MAX_V {
@@ -118,59 +118,53 @@ mod tests {
 
     #[test]
     fn test_step_1() {
-        let mut p = create_program([1, 9, 10, 3, 2, 3, 11, 0, 99, 30, 40, 50].to_vec());
+        let mut p = create_program(vec![1, 9, 10, 3, 2, 3, 11, 0, 99, 30, 40, 50]);
         assert!(step(&mut p).is_ok());
-        assert_eq!(
-            p.cells,
-            [1, 9, 10, 70, 2, 3, 11, 0, 99, 30, 40, 50].to_vec()
-        );
+        assert_eq!(p.cells, vec![1, 9, 10, 70, 2, 3, 11, 0, 99, 30, 40, 50]);
         assert_eq!(p.index, 4);
     }
 
     #[test]
     fn test_step_2() {
-        let mut p = create_program([1, 9, 10, 70, 2, 3, 11, 0, 99, 30, 40, 50].to_vec());
+        let mut p = create_program(vec![1, 9, 10, 70, 2, 3, 11, 0, 99, 30, 40, 50]);
         p.index = 4;
         assert!(step(&mut p).is_ok());
-        assert_eq!(
-            p.cells,
-            [3500, 9, 10, 70, 2, 3, 11, 0, 99, 30, 40, 50].to_vec()
-        );
+        assert_eq!(p.cells, vec![3500, 9, 10, 70, 2, 3, 11, 0, 99, 30, 40, 50]);
         assert_eq!(p.index, 8);
     }
 
     #[test]
     fn test_step_3() {
-        let mut p = create_program([3500, 9, 10, 70, 2, 3, 11, 0, 99, 30, 40, 50].to_vec());
+        let mut p = create_program(vec![3500, 9, 10, 70, 2, 3, 11, 0, 99, 30, 40, 50]);
         p.index = 8;
         assert!(step(&mut p).is_err());
     }
 
     #[test]
     fn test_run_program_1() {
-        let mut p = create_program([1, 0, 0, 0, 99].to_vec());
+        let mut p = create_program(vec![1, 0, 0, 0, 99]);
         assert!(run_program(&mut p).is_ok());
-        assert_eq!(p.cells, [2, 0, 0, 0, 99].to_vec());
+        assert_eq!(p.cells, vec![2, 0, 0, 0, 99]);
     }
 
     #[test]
     fn test_run_program_2() {
-        let mut p = create_program([2, 3, 0, 3, 99].to_vec());
+        let mut p = create_program(vec![2, 3, 0, 3, 99]);
         assert!(run_program(&mut p).is_ok());
-        assert_eq!(p.cells, [2, 3, 0, 6, 99].to_vec());
+        assert_eq!(p.cells, vec![2, 3, 0, 6, 99]);
     }
 
     #[test]
     fn test_run_program_3() {
-        let mut p = create_program([2, 4, 4, 5, 99, 0].to_vec());
+        let mut p = create_program(vec![2, 4, 4, 5, 99, 0]);
         assert!(run_program(&mut p).is_ok());
-        assert_eq!(p.cells, [2, 4, 4, 5, 99, 9801].to_vec());
+        assert_eq!(p.cells, vec![2, 4, 4, 5, 99, 9801]);
     }
 
     #[test]
     fn test_run_program_4() {
-        let mut p = create_program([1, 1, 1, 4, 99, 5, 6, 0, 99].to_vec());
+        let mut p = create_program(vec![1, 1, 1, 4, 99, 5, 6, 0, 99]);
         assert!(run_program(&mut p).is_ok());
-        assert_eq!(p.cells, [30, 1, 1, 4, 2, 5, 6, 0, 99].to_vec());
+        assert_eq!(p.cells, vec![30, 1, 1, 4, 2, 5, 6, 0, 99]);
     }
 }

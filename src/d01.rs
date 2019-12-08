@@ -13,7 +13,7 @@ fn fuel2(v_: i32) -> i32 {
             sum += v;
         }
     }
-    return sum;
+    sum
 }
 
 pub fn run() {

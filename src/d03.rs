@@ -14,7 +14,7 @@ struct Coord {
 }
 
 fn manhattan_dist(x: i32, y: i32) -> u32 {
-    return (x.abs() + y.abs()) as u32;
+    (x.abs() + y.abs()) as u32
 }
 
 fn expand_line(steps: &Vec<Step>) -> Vec<Coord> {
@@ -37,10 +37,10 @@ fn expand_line(steps: &Vec<Step>) -> Vec<Coord> {
             };
             x += dx;
             y += dy;
-            vec.push(Coord { x: x, y: y });
+            vec.push(Coord { x, y });
         }
     }
-    return vec;
+    vec
 }
 
 pub fn run() {
@@ -49,11 +49,9 @@ pub fn run() {
         .lines()
         .map(|line| {
             line.split_terminator(',')
-                .map(|item| {
-                    return Step {
-                        direction: item.chars().nth(0).unwrap(),
-                        length: (item[1..]).parse::<u32>().unwrap(),
-                    };
+                .map(|item| Step {
+                    direction: item.chars().nth(0).unwrap(),
+                    length: (item[1..]).parse::<u32>().unwrap(),
                 })
                 .collect()
         })
@@ -91,18 +89,16 @@ pub fn run() {
                     if !map.contains_key(coord) {
                         map.insert(*coord, ci);
                     }
-                } else {
-                    if map.contains_key(coord) {
-                        match map.get(coord) {
-                            Some(&ci0) => {
-                                let v = ci0 + ci + 2;
-                                if v < shortest_combined {
-                                    shortest_combined = v;
-                                    //println!("{} {} => {}", ci0, ci, shortest_combined);
-                                }
+                } else if map.contains_key(coord) {
+                    match map.get(coord) {
+                        Some(&ci0) => {
+                            let v = ci0 + ci + 2;
+                            if v < shortest_combined {
+                                shortest_combined = v;
+                                //println!("{} {} => {}", ci0, ci, shortest_combined);
                             }
-                            _ => (),
                         }
+                        _ => (),
                     }
                 }
             }
@@ -117,20 +113,18 @@ mod tests {
 
     #[test]
     fn test_expand_line_1() {
-        let steps = [Step {
+        let steps = vec![Step {
             direction: 'D',
             length: 2,
-        }]
-        .to_vec();
+        }];
         let coords = expand_line(&steps);
         assert_eq!(
             coords,
-            [
+            vec![
                 //Coord { x: 0, y: 0 },
                 Coord { x: 0, y: 1 },
                 Coord { x: 0, y: 2 }
             ]
-            .to_vec()
         );
     }
 }

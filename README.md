@@ -11,6 +11,8 @@ Using visual studio code for development in linux and osx.
 - extensions
   - Rust (rls)
   - CodeLLDB
+- optional
+  - [clippy](https://github.com/rust-lang/rust-clippy)
 
 ## run it
 
@@ -38,4 +40,5 @@ To measure time spent computing solutions...
 ## Rust references
 
 - <https://doc.rust-lang.org/rust-by-example/index.html>
+- <https://cheats.rs/>
 - <https://github.com/rust-lang/rustlings/tree/master/exercises>

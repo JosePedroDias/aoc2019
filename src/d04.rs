@@ -1,6 +1,6 @@
 fn to_vec_of_u8(n: u32) -> Vec<u8> {
     let s: String = n.to_string();
-    return s.chars().map(|c| c.to_digit(10).unwrap() as u8).collect();
+    s.chars().map(|c| c.to_digit(10).unwrap() as u8).collect()
 }
 
 fn is_password(n: u32) -> bool {
@@ -17,7 +17,7 @@ fn is_password(n: u32) -> bool {
         }
         last_digit = d;
     }
-    return found_adjacent;
+    found_adjacent
 }
 
 fn is_password2(n: u32) -> bool {
@@ -46,7 +46,7 @@ fn is_password2(n: u32) -> bool {
         found_adjacent_of_2 = true;
     }
 
-    return found_adjacent_of_2;
+    found_adjacent_of_2
 }
 
 pub fn run() {
@@ -85,7 +85,7 @@ mod tests {
 
     #[test]
     fn test_conversion() {
-        assert_eq!(to_vec_of_u8(251), [2, 5, 1].to_vec());
+        assert_eq!(to_vec_of_u8(251), vec![2, 5, 1]);
     }
 
     #[test]
