@@ -58,7 +58,7 @@ pub fn run() {
 
     {
         let mut count = 0;
-        for i in min..max + 1 {
+        for i in min..=max {
             if is_password(i) {
                 count += 1;
                 //println!("{}", i);
