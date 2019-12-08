@@ -5,8 +5,8 @@ const BLACK: u8 = 0;
 const WHITE: u8 = 1;
 const TRANSP: u8 = 2;
 
-fn analyze(data: &[u8]) -> usize {
-    let l: usize = data.len() / W / H;
+fn analyze(data: &[u8], w: usize, h: usize) -> usize {
+    let l: usize = data.len() / w / h;
     let mut smallest_value = std::usize::MAX;
     let mut answer: usize = 0;
 
@@ -15,10 +15,9 @@ fn analyze(data: &[u8]) -> usize {
         let mut num_zeros = 0;
         let mut num_ones = 0;
         let mut num_twos = 0;
-        for _ in 0..H {
-            for _ in 0..W {
-                let v: u8 = data[i];
-                match v {
+        for _ in 0..h {
+            for _ in 0..w {
+                match data[i] {
                     0 => num_zeros += 1,
                     1 => num_ones += 1,
                     2 => num_twos += 1,
@@ -33,19 +32,19 @@ fn analyze(data: &[u8]) -> usize {
         }
     }
 
-    return answer;
+    answer
 }
 
-fn process(data: &[u8]) -> Vec<u8> {
-    let l: usize = data.len() / W / H;
-    let mut data2: Vec<u8> = vec![TRANSP; W * H];
-    let mut i: usize = 0;
-    for _ in 0..l {
-        for y in 0..H {
-            for x in 0..W {
-                let v: u8 = data[i];
-                let idx: usize = x + W * y;
-                match v {
+fn process(data: &[u8], w: usize, h: usize) -> Vec<u8> {
+    let l: usize = data.len() / w / h;
+    let page_size = w * h;
+    let mut data2: Vec<u8> = vec![TRANSP; page_size];
+    for li in (0..l).rev() {
+        let mut i = li * page_size;
+        for y in 0..h {
+            for x in 0..w {
+                let idx: usize = x + w * y;
+                match data[i] {
                     BLACK => data2[idx] = BLACK,
                     WHITE => data2[idx] = WHITE,
                     TRANSP => (),
@@ -78,12 +77,31 @@ pub fn run() {
         .map(|ch: char| ch.to_digit(10).unwrap() as u8)
         .collect();
 
-    let answer1 = analyze(&data);
+    let answer1 = analyze(&data, W, H);
     println!("08a: answer:{}", answer1);
 
-    let data2: Vec<u8> = process(&data);
+    println!("08b:");
+    let data2: Vec<u8> = process(&data, W, H);
     print_layer(&data2);
+    //println!("{:#?}", data2);
 }
 
 #[cfg(test)]
-mod tests {}
+mod tests {
+    use super::*;
+    #[test]
+    fn test_analyze() {
+        let w = 3;
+        let h = 2;
+        let data = vec![1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2];
+        assert_eq!(analyze(&data, w, h), 1);
+    }
+
+    #[test]
+    fn test_process() {
+        let w = 2;
+        let h = 2;
+        let data = vec![0, 2, 2, 2, 1, 1, 2, 2, 2, 2, 1, 2, 0, 0, 0, 0];
+        assert_eq!(process(&data, w, h), vec![0, 1, 1, 0]);
+    }
+}
