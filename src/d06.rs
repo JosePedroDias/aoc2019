@@ -1,33 +1,36 @@
-use std::rc::Rc;
-//use std::collections::HashMap;
+//use std::rc::Rc;
 
 #[derive(Debug, Clone)]
-struct Node {
-    parent: Option<Box<Node>>,
+struct Node<'a> {
+    parent: Option<&'a Node>,
     name: String,
-    children: Vec<Rc<Node>>,
+    children: Vec<&'a Node>,
 }
 
 impl Node {
-    fn new(name: String) -> Box<Node> {
-        Box::new(Node {
+    fn new(name: String) -> Node {
+        Node {
             parent: None,
             name,
             children: Vec::new(),
-        })
+        }
     }
 
-    fn find(&self, name: &String) -> Option<Box<Node>> {
+    fn find(&self, name: &String) -> Option<&Node> {
         if *name == self.name {
-            return Some(Box::new((*self).clone()));
+            return Some(self);
         }
         for child in self.children.iter() {
             let potential_result = child.find(name);
             match potential_result {
                 None => (),
-                _ => return potential_result,
+                _ => {
+                    println!("{} found", name);
+                    return potential_result;
+                }
             }
         }
+        println!("{} not found", name);
         None
     }
 }
@@ -44,33 +47,26 @@ pub fn run() {
         })
         .collect();
 
-    //println!("06a: {:#?}", lines);
-    //let mut lookup: HashMap<&str, Box<Node>> = HashMap::new();
-
-    /*
-    COM)B
-    B)C
-    C)D
-    D)E
-    E)F
-    B)G
-    G)H
-    D)I
-    E)J
-    J)K
-    K)L
-    */
+    let root_name = lines[0].0;
+    let n0 = Node::new(root_name.to_string());
 
     for pair in lines.iter() {
         let (a, b) = pair;
-        println!("{} {}", a, b);
-        let mut n1 = Node::new(a.to_string());
-        let n2 = Node::new(b.to_string());
-        n1.children.push(Rc::new(*n2));
-        //lookup.insert("COM", n);
-        //lookup.insert("B", b);
-        //lookup
+        //println!("{} {}", a, b);
+
+        let mut n1 = match n0.find(&a.to_string()) {
+            Some(n) => *n,
+            _ => Node::new(a.to_string()),
+        };
+
+        let n2 = match n0.find(&b.to_string()) {
+            Some(n) => *n,
+            _ => Node::new(b.to_string()),
+        };
+        n1.children.push(&n2);
     }
+
+    println!("{:#?}", n0);
 }
 
 #[cfg(test)]
