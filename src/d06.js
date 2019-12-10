@@ -6,63 +6,44 @@ function parse(s) {
   return lines.map((l) => l.split(')'));
 }
 
-function createMatrix(m, n) {
-  const mtx = new Array(m).fill(0).map((_) => {
-    const arr = new Array(n);
-    arr.fill(0);
-    return arr;
-  });
-  return mtx;
-}
-
-function mapMatrix(m, fn) {
-  const d1 = m.length;
-  const d2 = m[0].length;
-  for (let a = 0; a < d1; ++a) {
-    for (let b = 0; b < d2; ++b) {
-      m[a][b] = fn(a, b);
-    }
-  }
-}
-
-// DAG connectedness https://algs4.cs.princeton.edu/42digraph/
+// DAG connectedness
+// https://algs4.cs.princeton.edu/42digraph/
+// https://www.geeksforgeeks.org/depth-first-search-or-dfs-for-a-graph/
 
 function process(pairs) {
   //console.log(pairs);
 
-  let set = new Set();
-  pairs.forEach(([a, b]) => {
-    set.add(a);
-    set.add(b);
-  });
-
-  const edges = Array.from(set);
-  const edgeIndexes = new Map();
-  edges.forEach((e, i) => {
-    edgeIndexes.set(e, i);
-  });
-
-  const L = edges.length;
-  const m = createMatrix(L, L);
-  mapMatrix(m, (m, n) => 0);
+  const edges_ = new Set();
+  const dag = new Map();
 
   pairs.forEach(([a, b]) => {
-    const iA = edgeIndexes.get(a);
-    const iB = edgeIndexes.get(b);
-    m[iA][iB] = 1;
-    //m[iB][iA] = 1;
+    edges_.add(a);
+    edges_.add(b);
+
+    if (!dag.has(a)) {
+      s = new Set();
+      dag.set(a, s);
+    } else {
+      s = dag.get(a);
+    }
+    s.add(b);
   });
 
-  //console.log(edgeIndexes);
-  //console.log(m);
-
-  function isOrbiting(i1, i2) {
-    return m[i1][i2];
+  function isOrbiting(a, b) {
+    const s = dag.get(a);
+    if (!s) {
+      return false;
+    }
+    return s.has(b);
   }
 
-  function orbitsOf(i1) {
-    const arr = m[i1];
-    return arr.reduce((p, v, i) => (v ? [...p, i] : p), []);
+  function orbitsOf(a) {
+    const s = dag.has(a);
+    if (!s) {
+      return [];
+    }
+    return Array.from(dag.get(a));
+    //return dag.get(a);
   }
 
   function isIndirectlyOrbiting(i1, i2) {
@@ -77,18 +58,41 @@ function process(pairs) {
     }
   }
 
+  //console.log(dag);
+
+  const edges = Array.from(edges_);
+  const L = edges.length;
+  //console.log(edges);
+  console.log(L);
+
   let i = 0;
-  for (let a = 0; a < L; ++a) {
+
+  function dfsAux(a, visited) {
+    visited.add(a);
+    for (let b of orbitsOf(a)) {
+      if (!visited.has(b)) {
+        ++i;
+        console.log(`${a} ${b}`);
+        dfsAux(b, visited);
+      }
+    }
+  }
+
+  dfsAux('COM', new Set());
+
+  /*for (let a = 0; a < L; ++a) {
     for (let b = 0; b < L; ++b) {
       if (a === b) {
         continue;
       }
-      if (isIndirectlyOrbiting(a, b)) {
+      const A = edges[a];
+      const B = edges[b];
+      if (isIndirectlyOrbiting(A, B)) {
         ++i;
-        //console.log(`#${i} ${edges[a]} -> ${edges[b]}`);
+        //console.log(`#${i} ${A} -> ${B}`);
       }
     }
-  }
+  }*/
 
   return i;
 }
