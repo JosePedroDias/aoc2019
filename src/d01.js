@@ -40,15 +40,19 @@ function main() {
 
 function test() {
   // fuel1
-  assert.equal(fuel1(12), 2);
-  assert.equal(fuel1(14), 2);
-  assert.equal(fuel1(1969), 654);
-  assert.equal(fuel1(100756), 33583);
+  (() => {
+    assert.equal(fuel1(12), 2);
+    assert.equal(fuel1(14), 2);
+    assert.equal(fuel1(1969), 654);
+    assert.equal(fuel1(100756), 33583);
+  })();
 
   // fuel2
-  assert.equal(fuel2(12), 2);
-  assert.equal(fuel2(1969), 966);
-  assert.equal(fuel2(100756), 50346);
+  (() => {
+    assert.equal(fuel2(12), 2);
+    assert.equal(fuel2(1969), 966);
+    assert.equal(fuel2(100756), 50346);
+  })();
 }
 
 test();

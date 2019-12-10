@@ -43,3 +43,14 @@ To measure time spent computing solutions...
 - <https://cheats.rs/>
 - <https://doc.rust-lang.org/book/ch15-05-interior-mutability.html>
 - <https://github.com/rust-lang/rustlings/tree/master/exercises>
+
+## EXERCISES
+
+- 01 `**` - The Tyranny of the Rocket Equation (fuel operations)
+- 02 `**` - 1202 Program Alarm (intcode add, mul)
+- 03 `**` - Crossed Wires (manhattan distance on 2 wires)
+- 04 `**` - Secure Container (password rules)
+- 05 - Sunny with a Chance of Asteroids (intcode 2: in, out, immediate mode)
+- 06 - Universal Orbit Map (tree)
+- 07 - Amplification Circuit (intcode 3:?)
+- 08 `**` - Space Image Format (decode layer of images)

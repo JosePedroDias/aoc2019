@@ -1,18 +1,18 @@
-//use std::rc::Rc;
+use std::cell::RefCell;
+use std::rc::Rc;
 
 #[derive(Debug, Clone)]
-struct Node<'a> {
-    parent: Option<&'a Node>,
+struct Node {
     name: String,
-    children: Vec<&'a Node>,
+    //children: Vec<&'a Node>,
+    children: RefCell<Vec<&'static Node>>,
 }
 
 impl Node {
     fn new(name: String) -> Node {
         Node {
-            parent: None,
             name,
-            children: Vec::new(),
+            children: RefCell::new(Vec::new()),
         }
     }
 
@@ -20,7 +20,7 @@ impl Node {
         if *name == self.name {
             return Some(self);
         }
-        for child in self.children.iter() {
+        for child in self.children.borrow_mut() {
             let potential_result = child.find(name);
             match potential_result {
                 None => (),
@@ -63,7 +63,7 @@ pub fn run() {
             Some(n) => *n,
             _ => Node::new(b.to_string()),
         };
-        n1.children.push(&n2);
+        n1.children.borrow_mut().push(Rc::new(n2));
     }
 
     println!("{:#?}", n0);
