@@ -41,4 +41,5 @@ To measure time spent computing solutions...
 
 - <https://doc.rust-lang.org/rust-by-example/index.html>
 - <https://cheats.rs/>
+- <https://doc.rust-lang.org/book/ch15-05-interior-mutability.html>
 - <https://github.com/rust-lang/rustlings/tree/master/exercises>
