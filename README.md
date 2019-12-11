@@ -54,3 +54,5 @@ To measure time spent computing solutions...
 - 06 - Universal Orbit Map (tree)
 - 07 - Amplification Circuit (intcode 3:?)
 - 08 `**` - Space Image Format (decode layer of images)
+- 09 - Sensor Boost (intcode 4:?)
+- 10 - Monitoring Station
