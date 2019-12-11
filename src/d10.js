@@ -52,7 +52,7 @@ function visibleAsteroids({ asteroids, pos }) {
     }
   }
   //console.log(`-> ${pos} has ${visibleSoFar.size}`);
-  return visibleSoFar.size;
+  return visibleSoFar;
 }
 
 function arrContains(arr, pos) {
@@ -74,14 +74,23 @@ function findBestPosition({ w, h, asteroids }) {
         continue;
       }
       //console.log(`pos ${pos}...`);
-      const tmp = visibleAsteroids({ asteroids, pos });
+      const tmp = visibleAsteroids({ asteroids, pos }).size;
       if (tmp > visibles) {
         visibles = tmp;
         bestPosition = pos;
       }
     }
   }
-  return { position: bestPosition, visible: visibles };
+  return { pos: bestPosition, visible: visibles };
+}
+
+function vaporize({ asteroids, pos }) {
+  let angle = 90;
+  let i = 0;
+  //while (true) {
+  const vis = visibleAsteroids({ asteroids, pos });
+  //vis. TODO
+  console.log(vis);
 }
 
 function main() {
@@ -89,35 +98,94 @@ function main() {
   const mtx = file.split('\n');
 
   const { w, h, asteroids } = parseMatrix(mtx);
-  const { position, visible } = findBestPosition({ w, h, asteroids });
-  console.log(position, visible);
+  const { pos, visible } = findBestPosition({ w, h, asteroids });
+  console.log('10a:', pos, visible);
+
+  const destroyed = vaporize({ asteroids, pos });
+  //const dest200th = destroyed[199];
+  //console.log('10b:', dest200th[0] * 100 + dest200th[1]);
 }
 
 function test() {
-  const mtx = `.#..#
+  (() => {
+    const mtx = `.#..#
 .....
 #####
 ....#
 ...##`.split('\n');
-  const { w, h, asteroids } = parseMatrix(mtx);
-  assert.equal(w, 5);
-  assert.equal(h, 5);
-  assert.deepEqual(asteroids, [
-    [1, 0],
-    [4, 0],
-    [0, 2],
-    [1, 2],
-    [2, 2],
-    [3, 2],
-    [4, 2],
-    [4, 3],
-    [3, 4],
-    [4, 4]
-  ]);
+    const { w, h, asteroids } = parseMatrix(mtx);
+    assert.equal(w, 5);
+    assert.equal(h, 5);
+    assert.deepEqual(asteroids, [
+      [1, 0],
+      [4, 0],
+      [0, 2],
+      [1, 2],
+      [2, 2],
+      [3, 2],
+      [4, 2],
+      [4, 3],
+      [3, 4],
+      [4, 4]
+    ]);
 
-  const { position, visible } = findBestPosition({ w, h, asteroids });
-  assert.deepEqual(position, [3, 4]);
-  assert.equal(visible, 8);
+    const { pos, visible } = findBestPosition({ w, h, asteroids });
+    assert.deepEqual(pos, [3, 4]);
+    assert.equal(visible, 8);
+  })();
+
+  (() => {
+    const mtx = `.#....#####...#..
+##...##.#####..##
+##...#...#.#####.
+..#.........###..
+..#.#.....#....##`.split('\n');
+    const { w, h, asteroids } = parseMatrix(mtx);
+    assert.equal(w, 17);
+    assert.equal(h, 5);
+    assert.deepEqual(asteroids, [
+      [1, 0],
+      [6, 0],
+      [7, 0],
+      [8, 0],
+      [9, 0],
+      [10, 0],
+      [14, 0],
+      [0, 1],
+      [1, 1],
+      [5, 1],
+      [6, 1],
+      [8, 1],
+      [9, 1],
+      [10, 1],
+      [11, 1],
+      [12, 1],
+      [15, 1],
+      [16, 1],
+      [0, 2],
+      [1, 2],
+      [5, 2],
+      [9, 2],
+      [11, 2],
+      [12, 2],
+      [13, 2],
+      [14, 2],
+      [15, 2],
+      [2, 3],
+      [12, 3],
+      [13, 3],
+      [14, 3],
+      [2, 4],
+      [4, 4],
+      [10, 4],
+      [15, 4],
+      [16, 4]
+    ]);
+
+    const pos = [9, 3];
+    const destroyed = vaporize({ asteroids, pos });
+    assert.deepEqual(destroyed, []);
+  })();
 }
 
 test();
