@@ -1,5 +1,6 @@
 const fs = require('fs');
 const assert = require('assert');
+const deepEqual = require('deep-equal');
 
 const STEPS = 1000;
 
@@ -31,9 +32,6 @@ function combinations(n) {
 }
 
 function step(ents, combs) {
-  //console.log(ents);
-  //console.log(combs);
-
   // print and reset vel
   ents.forEach((e) => {
     /*console.log(
@@ -41,7 +39,6 @@ function step(ents, combs) {
         e.vel[0]
       )}, y=${_(e.vel[1])}, z=${_(e.vel[2])}>`
     );*/
-    //e.vel = [0, 0, 0];
   });
 
   // vel with gravity
@@ -90,6 +87,10 @@ function energySystem(ents) {
   return sum(ents.map(energy));
 }
 
+function clone(o) {
+  return JSON.parse(JSON.stringify(o));
+}
+
 function parse(s) {
   const lines = s.split('\n').map((s) => {
     const m = RGX.exec(s);
@@ -99,49 +100,126 @@ function parse(s) {
   return ents;
 }
 
-function main() {
-  const fileS = fs.readFileSync('input/12.txt').toString();
-
-  const fileS0 = `<x=-1, y=0, z=2>
-<x=2, y=-10, z=-7>
-<x=4, y=-8, z=8>
-<x=3, y=5, z=-1>`;
-
-  const file1S = `<x=-8, y=-10, z=0>
-<x=5, y=5, z=10>
-<x=2, y=-7, z=3>
-<x=9, y=-8, z=-3>`;
-
-  const ents = parse(fileS);
-
+function simulate(ents, steps) {
   const combs = combinations(ents.length);
-  for (let i = 0; i < STEPS /*+ 1*/; ++i) {
+  for (let i = 0; i < steps; ++i) {
     //console.log(`\nAfter ${i} steps:`);
     step(ents, combs);
   }
+}
+
+function simulateUntilEqual(ents) {
+  const combs = combinations(ents.length);
+  const ents0 = clone(ents);
+
+  let i = 0;
+  const opts = { strict: true };
+  do {
+    //console.log(`\nAfter ${i} steps:`);
+    step(ents, combs);
+    ++i;
+  } while (!deepEqual(ents, ents0, opts));
+
+  return i;
+}
+
+function main() {
+  const fileS = fs.readFileSync('input/12.txt').toString();
+
+  let ents = parse(fileS);
+  const ents0 = clone(ents);
+
+  simulate(ents, 1000);
 
   const e = energySystem(ents);
   console.log('12a:', e);
+
+  //const i = simulateUntilEqual(ents0);
+  //console.log('12b:', i);
 }
 
 function test() {
   (() => {
-    assert.deepEqual(combinations(2), [[0, 1]]);
+    assert.deepEqual(combinations(2), [
+      [0, 1],
+      [1, 0]
+    ]);
     assert.deepEqual(combinations(3), [
       [0, 1],
       [0, 2],
-      [1, 2]
+      [1, 0],
+      [1, 2],
+      [2, 0],
+      [2, 1]
     ]);
     assert.deepEqual(combinations(4), [
       [0, 1],
       [0, 2],
       [0, 3],
+      [1, 0],
       [1, 2],
       [1, 3],
-      [2, 3]
+      [2, 0],
+      [2, 1],
+      [2, 3],
+      [3, 0],
+      [3, 1],
+      [3, 2]
     ]);
+  })();
+
+  (() => {
+    const fileS = `<x=-1, y=0, z=2>
+    <x=2, y=-10, z=-7>
+    <x=4, y=-8, z=8>
+    <x=3, y=5, z=-1>`;
+
+    let ents = parse(fileS);
+
+    simulate(ents, 10);
+
+    const e = energySystem(ents);
+    assert.equal(e, 179);
+  })();
+
+  (() => {
+    const fileS = `<x=-8, y=-10, z=0>
+    <x=5, y=5, z=10>
+    <x=2, y=-7, z=3>
+    <x=9, y=-8, z=-3>`;
+
+    let ents = parse(fileS);
+
+    simulate(ents, 100);
+
+    const e = energySystem(ents);
+    assert.equal(e, 1940);
+  })();
+
+  (() => {
+    const fileS = `<x=-1, y=0, z=2>
+    <x=2, y=-10, z=-7>
+    <x=4, y=-8, z=8>
+    <x=3, y=5, z=-1>`;
+
+    let ents = parse(fileS);
+
+    const i = simulateUntilEqual(ents);
+    assert.equal(i, 2772);
+  })();
+
+  (() => {
+    const fileS = `<x=-8, y=-10, z=0>
+    <x=5, y=5, z=10>
+    <x=2, y=-7, z=3>
+    <x=9, y=-8, z=-3>`;
+
+    let ents = parse(fileS);
+
+    //const i = simulateUntilEqual(ents);
+    //assert.equal(i, 4686774924);
   })();
 }
 
-//test();
+test();
 main();
