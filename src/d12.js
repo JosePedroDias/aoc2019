@@ -27,6 +27,7 @@ function step(ents, combs) {
   //console.log(ents);
   //console.log(combs);
 
+  // print and reset vel
   ents.forEach((e) => {
     console.log(
       `pos=<x=${e.pos[0]}, y=${e.pos[1]}, z=${e.pos[2]}>, vel=<x=${e.vel[0]}, y=${e.vel[1]}, z=${e.vel[2]}>`
@@ -34,6 +35,7 @@ function step(ents, combs) {
     e.vel = [0, 0, 0];
   });
 
+  // vel with gravity
   for (let [a, b] of combs) {
     const A = ents[a];
     const B = ents[b];
@@ -42,6 +44,7 @@ function step(ents, combs) {
     }
   }
 
+  // pos update with vel
   ents.forEach((e) => {
     for (let i = 0; i < 3; ++i) {
       e.pos[i] += e.vel[i];
