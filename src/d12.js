@@ -1,7 +1,7 @@
 const fs = require('fs');
 const assert = require('assert');
 
-const STEPS = 10;
+const STEPS = 1000;
 
 /*
 apply gravity to update velocity (for every pair of entities and each coord, -1, 0 or 1 by comparison)
@@ -10,12 +10,19 @@ apply velocity to update position
 
 const RGX = /<x=(-?\d+), y=(-?\d+), z=(-?\d+)>/;
 
+function _(n) {
+  if (n >= 0) {
+    return ' ' + n;
+  }
+  return n;
+}
+
 // order being irrelevant
 function combinations(n) {
   const arr = [];
   for (let i = 0, j; i < n; ++i) {
     for (j = 0; j < n; ++j) {
-      if (i < j) {
+      if (i !== j) {
         arr.push([i, j]);
       }
     }
@@ -29,10 +36,12 @@ function step(ents, combs) {
 
   // print and reset vel
   ents.forEach((e) => {
-    console.log(
-      `pos=<x=${e.pos[0]}, y=${e.pos[1]}, z=${e.pos[2]}>, vel=<x=${e.vel[0]}, y=${e.vel[1]}, z=${e.vel[2]}>`
-    );
-    e.vel = [0, 0, 0];
+    /*console.log(
+      `pos=<x=${_(e.pos[0])}, y=${_(e.pos[1])}, z=${_(e.pos[2])}>, vel=<x=${_(
+        e.vel[0]
+      )}, y=${_(e.vel[1])}, z=${_(e.vel[2])}>`
+    );*/
+    //e.vel = [0, 0, 0];
   });
 
   // vel with gravity
@@ -73,7 +82,7 @@ function energy(ent) {
   const pot = sumAbs(ent.pos);
   const kin = sumAbs(ent.vel);
   const res = pot * kin;
-  console.log(`pot:${pot} kin:${kin} tot:${res}`);
+  //console.log(`pot:${pot} kin:${kin} tot:${res}`);
   return res;
 }
 
@@ -91,22 +100,28 @@ function parse(s) {
 }
 
 function main() {
-  //const fileS = fs.readFileSync('input/12.txt').toString();
-  const fileS = `<x=-1, y=0, z=2>
+  const fileS = fs.readFileSync('input/12.txt').toString();
+
+  const fileS0 = `<x=-1, y=0, z=2>
 <x=2, y=-10, z=-7>
 <x=4, y=-8, z=8>
 <x=3, y=5, z=-1>`;
 
+  const file1S = `<x=-8, y=-10, z=0>
+<x=5, y=5, z=10>
+<x=2, y=-7, z=3>
+<x=9, y=-8, z=-3>`;
+
   const ents = parse(fileS);
 
   const combs = combinations(ents.length);
-  for (let i = 0; i < STEPS; ++i) {
-    console.log(`\nAfter ${i} steps:`);
+  for (let i = 0; i < STEPS /*+ 1*/; ++i) {
+    //console.log(`\nAfter ${i} steps:`);
     step(ents, combs);
   }
 
   const e = energySystem(ents);
-  console.log(e);
+  console.log('12a:', e);
 }
 
 function test() {
@@ -128,5 +143,5 @@ function test() {
   })();
 }
 
-test();
+//test();
 main();

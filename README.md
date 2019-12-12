@@ -56,3 +56,5 @@ To measure time spent computing solutions...
 - 08 `**` - Space Image Format (decode layer of images)
 - 09 - Sensor Boost (intcode 4:?)
 - 10 `*` - Monitoring Station
+- 11 - Space Police
+- 12 - The N-Body Problem
