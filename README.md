@@ -56,18 +56,30 @@ runs the tests and computes the answers of day `day`
 
 ## EXERCISES
 
-- 01 `**` - The Tyranny of the Rocket Equation (fuel operations)
-- 02 `**` - 1202 Program Alarm (intcode add, mul)
-- 03 `**` - Crossed Wires (manhattan distance on 2 wires)
-- 04 `**` - Secure Container (password rules)
-- 05 - Sunny with a Chance of Asteroids (intcode 2: in, out, immediate mode)
-- 06 - Universal Orbit Map (tree)
-- 07 - Amplification Circuit (intcode 3:?)
-- 08 `**` - Space Image Format (decode layer of images)
-- 09 - Sensor Boost (intcode 4:?)
-- 10 `*` - Monitoring Station
-- 11 - Space Police
-- 12 - The N-Body Problem
-- 13 - Care Package (intcode)
-- 14 - Space Stoichiometry
-- 15 - Oxygen System (intcode)
+| day | stars | title                                                    | lang    |
+| --- | ----- | -------------------------------------------------------- | ------- |
+| 01  | `**`  | The Tyranny of the Rocket Equation (fuel operations)     | rust    |
+| 02  | `**`  | 1202 Program Alarm (intcode add, mul)                    | rust    |
+| 03  | `**`  | Crossed Wires (manhattan distance on 2 wires)            | rust    |
+| 04  | `**`  | Secure Container (password rules)                        | rust    |
+| 05  | `__`  | Sunny with a Chance of Asteroids (intcode 2: i/o, modes) | rust/js |
+| 06  | `__`  | Universal Orbit Map (tree)                               | js      |
+| 07  | `__`  | Amplification Circuit (intcode 3:?)                      | js      |
+| 08  | `**`  | Space Image Format (decode layer of images)              | js      |
+| 09  | `__`  | Sensor Boost (intcode 4:?)                               | js      |
+| 10  | `*_`  | Monitoring Station                                       | js      |
+| 11  | `__`  | Space Police                                             | js      |
+| 12  | `__`  | The N-Body Problem                                       | js      |
+| 13  | `__`  | Care Package (intcode)                                   | js      |
+| 14  | `__`  | Space Stoichiometry                                      | js      |
+| 15  | `__`  | Oxygen System (intcode)                                  | js      |
+| 16  | `__`  | ?                                                        | js      |
+| 17  | `__`  | ?                                                        | js      |
+| 18  | `__`  | ?                                                        | js      |
+| 19  | `__`  | ?                                                        | js      |
+| 20  | `__`  | ?                                                        | js      |
+| 21  | `__`  | ?                                                        | js      |
+| 22  | `__`  | ?                                                        | js      |
+| 23  | `__`  | ?                                                        | js      |
+| 24  | `__`  | ?                                                        | js      |
+| 25  | `__`  | ?                                                        | js      |
