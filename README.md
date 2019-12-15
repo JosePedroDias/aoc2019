@@ -3,7 +3,7 @@
 This time I will try to make it till the end, hopefully learning a bit about rust as well.  
 Very newbie code ahead, be advised.
 
-## setup stuff
+## setup stuff (rust)
 
 Using visual studio code for development in linux and osx.
 
@@ -14,7 +14,7 @@ Using visual studio code for development in linux and osx.
 - optional
   - [clippy](https://github.com/rust-lang/rust-clippy)
 
-## run it
+## run it (rust)
 
 To calculate the answers do:
 
@@ -31,6 +31,16 @@ If one wants to see IO (prints) do instead:
 To measure time spent computing solutions...
 
     multitime -q -n 10 target/release/aoc2019
+
+## setup stuff (js)
+
+install recentish node version (I suggest using nvm)
+
+## run it (js)
+
+runs the tests and computes the answers of day `day`
+
+    node js/d<day>.js
 
 ## Other solutions for reference:
 
@@ -58,3 +68,6 @@ To measure time spent computing solutions...
 - 10 `*` - Monitoring Station
 - 11 - Space Police
 - 12 - The N-Body Problem
+- 13 - Care Package (intcode)
+- 14 - Space Stoichiometry
+- 15 - Oxygen System (intcode)
