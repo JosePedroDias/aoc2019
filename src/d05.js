@@ -3,15 +3,17 @@ const assert = require('assert');
 
 const ADD = 1;
 const MUL = 2;
-const STR = 3;
+const STO = 3;
 const OUT = 4;
 const END = 99;
 
-// 321OP
-// |||LL opcode
-// ||L__ mode 1st param (0=position, 1=immediate)
-// |L___ mode 2nd param
-// L____ mode 3rd param
+const OPS = {
+  [ADD]: ['ADD', 4],
+  [MUL]: ['MUL', 4],
+  [STO]: ['STO', 2],
+  [OUT]: ['OUT', 2],
+  [END]: ['END', 1]
+};
 
 function createProgram(values) {
   return {
@@ -27,61 +29,85 @@ function cloneProgram(p) {
   };
 }
 
-function atEnd(p) {
-  return p.cells[p.index] === END;
+function log(msg) {
+  console.log('LOG:', msg);
+}
+
+function getInput() {
+  const v = 1;
+  //console.log('INPUT:', v);
+  return v;
 }
 
 function step(p) {
-  const opcode2 = p.cells[p.index];
-  const opcode_str = '' + opcode2;
-  let l = opcode_str.length;
-  const opcode = parseInt(opcode_str.substr(l - 2), 10);
-  const mode1stImm = opcode_str[l - 3] === '1';
-  const mode2ndImm = opcode_str[l - 4] === '1';
-  //const mode3rdImm = opcode_str[l - 5] === '1'; // always immediate?
-  console.log(
-    `opcode_str:${opcode_str} opcode:${opcode} m1:${mode1stImm} m2:${mode2ndImm} m3:${''} a:${
-      p.cells[p.index + 1]
-    } b:${p.cells[p.index + 2]} c:${p.cells[p.index + 3]}`
-  );
-  if (opcode === STR) {
-    const dst = p.cells[p.cells[p.index + 1]];
-    const result = 1;
-    p.cells[dst] = result;
-    console.log(`#${p.index}: IN[${dst}] <- ${result}`);
-    p.index += 2;
-  } else if (opcode === OUT) {
-    const a = mode1stImm ? p.cells[p.index + 1] : p.cells[p.cells[p.index + 1]];
-    console.log(`#${p.index}: OUT ${a}`);
-    p.index += 2;
-  } else if (opcode === ADD || opcode === MUL) {
-    const a = mode1stImm ? p.cells[p.index + 1] : p.cells[p.cells[p.index + 1]];
-    const b = mode2ndImm ? p.cells[p.index + 2] : p.cells[p.cells[p.index + 2]];
-    let result;
-    if (opcode === ADD) {
-      result = a + b;
-    } else if (opcode === MUL) {
-      result = a * b;
+  const data = p.cells;
+  const index = p.index;
+
+  const o = data[index];
+
+  const os = ('0000' + o).split('').map((s) => parseInt(s, 10));
+  const op = os.pop() + os.pop() * 10;
+  const mA = !!os.pop();
+  const mB = !!os.pop();
+  const mC = !!os.pop();
+
+  const [opName, num] = OPS[op];
+
+  let a = '';
+  let b = '';
+  let c = '';
+  let aa = '';
+  let bb = '';
+  let cc = '';
+
+  if (num > 1) {
+    a = data[index + 1];
+    if (!mA) {
+      aa = a;
+      a = data[a];
     }
-    const dst = p.cells[p.index + 3];
-    p.cells[dst] = result;
-    console.log(
-      `#${p.index}: [${dst}] <- ${result} (${a} ${
-        opcode === ADD ? '+' : '*'
-      } ${b})`
-    );
-    p.index += 4;
-  } else if (opcode === END) {
-    throw 'Should not have reached step of END!';
-  } else {
-    throw `Unsupported opcode ${opcode} at index ${p.index}!`;
   }
+  if (num > 2) {
+    b = data[index + 2];
+    if (!mB) {
+      bb = b;
+      b = data[b];
+    }
+  }
+  if (num > 3) {
+    c = data[index + 3];
+    if (!mC) {
+      cc = c;
+      c = data[c];
+    }
+  }
+
+  if (op === 1) {
+    // ADD a + b => c
+    data[cc] = a + b;
+  } else if (op === 2) {
+    // MUL a + b => c
+    data[cc] = a * b;
+  } else if (op === 3) {
+    // STO a
+    data[aa] = getInput();
+  } else if (op === 4) {
+    // OUT a
+    log(data[aa]);
+  }
+
+  //console.log(`OP: ${o} | ${mC} ${mB} ${mA} | ${opName} (${op})`);
+  //console.log(`A: ${a} (${aa})`);
+  //console.log(`B: ${b} (${bb})`);
+  //console.log(`C: ${c} (${cc})`);
+
+  p.index += num;
+
+  return data[p.index] !== END;
 }
 
 function runProgram(p) {
-  while (!atEnd(p)) {
-    step(p);
-  }
+  while (!step(p));
 }
 
 function main() {
@@ -91,7 +117,8 @@ function main() {
   const p1 = createProgram(values);
 
   runProgram(p1);
-  console.log(`05a: ${p1.cells[0]}`);
+  //console.log(`05a: ${p1.cells[0]}`);
+  console.log('ALL DONE');
 }
 
 function test() {
@@ -104,4 +131,4 @@ function test() {
 }
 
 test();
-//main();
+main();

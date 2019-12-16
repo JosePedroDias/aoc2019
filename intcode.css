@@ -1,0 +1,25 @@
+body {
+  font-family: sans-serif;
+}
+
+label {
+  font-weight: bold;
+}
+
+span {
+  font-family: monospace;
+  display: inline-block;
+}
+
+.cell {
+  width: 45px;
+  font-size: 18px;
+  padding-right: 3px;
+  line-height: 25px;
+  height: 25px;
+  text-align: right;
+}
+
+.cell.selected {
+  background-color: #7f7;
+}
