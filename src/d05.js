@@ -38,7 +38,12 @@ function step(p) {
   const opcode = parseInt(opcode_str.substr(l - 2), 10);
   const mode1stImm = opcode_str[l - 3] === '1';
   const mode2ndImm = opcode_str[l - 4] === '1';
-  //const mode3rdImm = opcode_str[l - 5] === '1';
+  //const mode3rdImm = opcode_str[l - 5] === '1'; // always immediate?
+  console.log(
+    `opcode_str:${opcode_str} opcode:${opcode} m1:${mode1stImm} m2:${mode2ndImm} m3:${''} a:${
+      p.cells[p.index + 1]
+    } b:${p.cells[p.index + 2]} c:${p.cells[p.index + 3]}`
+  );
   if (opcode === STR) {
     const dst = p.cells[p.cells[p.index + 1]];
     const result = 1;
@@ -61,7 +66,9 @@ function step(p) {
     const dst = p.cells[p.index + 3];
     p.cells[dst] = result;
     console.log(
-      `#${p.index}: [${dst}] <- ${a} ${opcode === ADD ? '+' : '*'} ${b}`
+      `#${p.index}: [${dst}] <- ${result} (${a} ${
+        opcode === ADD ? '+' : '*'
+      } ${b})`
     );
     p.index += 4;
   } else if (opcode === END) {
@@ -96,5 +103,5 @@ function test() {
   })();
 }
 
-//test();
-main();
+test();
+//main();

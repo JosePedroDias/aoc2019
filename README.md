@@ -73,7 +73,7 @@ runs the tests and computes the answers of day `day`
 | 13  | `__`  | Care Package (intcode)                                   | js      |
 | 14  | `__`  | Space Stoichiometry                                      | js      |
 | 15  | `__`  | Oxygen System (intcode)                                  | js      |
-| 16  | `__`  | ?                                                        | js      |
+| 16  | `__`  | Flawed Frequency Transmission                            | js      |
 | 17  | `__`  | ?                                                        | js      |
 | 18  | `__`  | ?                                                        | js      |
 | 19  | `__`  | ?                                                        | js      |
