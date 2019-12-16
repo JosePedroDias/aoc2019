@@ -10,6 +10,8 @@ const OPS = {
   99: ['END', 1]
 };
 
+const VALID_OPS = Object.keys(OPS).map((s) => parseInt(s, 10));
+
 function log(msg) {
   console.log('LOG:', msg);
 }
@@ -20,8 +22,6 @@ function getInputN(n) {
     return n;
   };
 }
-const in1 = getInputN(1);
-const in5 = getInputN(5);
 
 function step(p, getInput, log) {
   const data = p.cells;
@@ -36,6 +36,10 @@ function step(p, getInput, log) {
   const mA = !!os.pop();
   const mB = !!os.pop();
   const mC = !!os.pop();
+
+  if (VALID_OPS.indexOf(op) === -1) {
+    throw `at index ${i} found unsupported op ${op}!`;
+  }
 
   const [opName, num] = OPS[op];
 
@@ -127,7 +131,6 @@ function runProgram(values, getInput, log) {
 
 module.exports = {
   runProgram,
-  in1,
-  in5,
+  getInputN,
   log
 };
