@@ -1,49 +1,38 @@
 const fs = require('fs');
 const assert = require('assert');
 
-const ADD = 1;
-const MUL = 2;
-const STO = 3;
-const OUT = 4;
-const END = 99;
-
 const OPS = {
-  [ADD]: ['ADD', 4],
-  [MUL]: ['MUL', 4],
-  [STO]: ['STO', 2],
-  [OUT]: ['OUT', 2],
-  [END]: ['END', 1]
+  1: ['ADD', 4],
+  2: ['MUL', 4],
+  3: ['STO', 2],
+  4: ['OUT', 2],
+  5: ['JIT', 3],
+  6: ['JIF', 3],
+  7: ['LTH', 4],
+  8: ['EQU', 4],
+  99: ['END', 1]
 };
-
-function createProgram(values) {
-  return {
-    index: 0,
-    cells: values
-  };
-}
-
-function cloneProgram(p) {
-  return {
-    index: p.index,
-    cells: p.cells.slice()
-  };
-}
 
 function log(msg) {
   console.log('LOG:', msg);
 }
 
-function getInput() {
-  const v = 1;
-  //console.log('INPUT:', v);
-  return v;
+function getInputN(n) {
+  return function() {
+    //console.log('INPUT:', n);
+    return n;
+  };
 }
+const in1 = getInputN(1);
+const in5 = getInputN(5);
 
-function step(p) {
+function step(p, getInput, log) {
   const data = p.cells;
-  const index = p.index;
+  const i = p.index;
 
-  const o = data[index];
+  //console.log(`\n---------\nindex: ${i}zn`);
+
+  const o = data[i];
 
   const os = ('0000' + o).split('').map((s) => parseInt(s, 10));
   const op = os.pop() + os.pop() * 10;
@@ -61,26 +50,28 @@ function step(p) {
   let cc = '';
 
   if (num > 1) {
-    a = data[index + 1];
+    a = data[i + 1];
     if (!mA) {
       aa = a;
       a = data[a];
     }
   }
   if (num > 2) {
-    b = data[index + 2];
+    b = data[i + 2];
     if (!mB) {
       bb = b;
       b = data[b];
     }
   }
   if (num > 3) {
-    c = data[index + 3];
+    c = data[i + 3];
     if (!mC) {
       cc = c;
       c = data[c];
     }
   }
+
+  let jumped = false;
 
   if (op === 1) {
     // ADD a + b => c
@@ -94,39 +85,67 @@ function step(p) {
   } else if (op === 4) {
     // OUT a
     log(data[aa]);
+  } else if (op === 5) {
+    // JIT a b
+    if (a) {
+      p.index = b;
+      jumped = true;
+    }
+  } else if (op === 6) {
+    // JIF a b
+    if (!a) {
+      p.index = b;
+      jumped = true;
+    }
+  } else if (op === 7) {
+    // LTH a < b ? 1/0 => c
+    const v = a < b ? 1 : 0;
+    data[cc] = v;
+  } else if (op === 8) {
+    // EQU a == b ? 1/0 => c
+    const v = a === b ? 1 : 0;
+    data[cc] = v;
   }
 
-  //console.log(`OP: ${o} | ${mC} ${mB} ${mA} | ${opName} (${op})`);
-  //console.log(`A: ${a} (${aa})`);
-  //console.log(`B: ${b} (${bb})`);
-  //console.log(`C: ${c} (${cc})`);
+  /*console.log(`OP: ${o} | ${mC} ${mB} ${mA} | ${opName} (${op})`);
+  console.log(`A: ${a} (${aa})`);
+  console.log(`B: ${b} (${bb})`);
+  console.log(`C: ${c} (${cc})`);*/
 
-  p.index += num;
+  if (!jumped) {
+    p.index += num;
+  }
 
-  return data[p.index] !== END;
+  return data[p.index] !== 99;
 }
 
-function runProgram(p) {
-  while (!step(p));
+function runProgram(values, getInput, log) {
+  const p = {
+    index: 0,
+    cells: values.slice()
+  };
+  while (step(p, getInput, log));
+  return p.cells;
 }
 
 function main() {
   const file = fs.readFileSync('input/05.txt').toString();
   const lines = file.split(',');
   const values = lines.map((v) => parseInt(v, 10));
-  const p1 = createProgram(values);
 
-  runProgram(p1);
-  //console.log(`05a: ${p1.cells[0]}`);
+  console.log('05a:');
+  runProgram(values, in1, log);
+
+  console.log('05b:');
+  runProgram(values, in5, log);
+
   console.log('ALL DONE');
 }
 
 function test() {
-  // runProgram
   (() => {
-    const p = createProgram([1002, 4, 3, 4, 33]);
-    runProgram(p);
-    assert.deepEqual(p.cells, [1002, 4, 3, 4, 99]);
+    const v = runProgram([1002, 4, 3, 4, 33], in1, log);
+    assert.deepEqual(v, [1002, 4, 3, 4, 99]);
   })();
 }
 

@@ -1,5 +1,7 @@
 'use strict';
 
+const STEP_MS = 25;
+
 function q(s) {
   return document.querySelector(s);
 }
@@ -28,6 +30,10 @@ const OPS = {
   2: ['MUL', 4],
   3: ['STO', 2],
   4: ['OUT', 2],
+  5: ['JIT', 3],
+  6: ['JIF', 3],
+  7: ['LTH', 4],
+  8: ['EQU', 4],
   99: ['HALT', 1]
 };
 
@@ -43,7 +49,8 @@ function log(msg) {
 }
 
 function getInput() {
-  return 1;
+  //return 1;
+  return 5;
 }
 
 function step() {
@@ -90,6 +97,7 @@ function step() {
     }
   }
 
+  let jumped = false;
   if (op === 1) {
     // ADD a + b => c
     data[cc] = a + b;
@@ -105,6 +113,28 @@ function step() {
   } else if (op === 4) {
     // OUT a
     log(data[aa]);
+  } else if (op === 5) {
+    // JIT a b
+    if (a) {
+      index = b;
+      jumped = true;
+    }
+  } else if (op === 6) {
+    // JIF a b
+    if (!a) {
+      index = b;
+      jumped = true;
+    }
+  } else if (op === 7) {
+    // LTH a < b ? 1/0 => c
+    const v = a < b ? 1 : 0;
+    data[cc] = v;
+    updateCell(cc, data[cc]);
+  } else if (op === 8) {
+    // EQU a == b ? 1/0 => c
+    const v = a === b ? 1 : 0;
+    data[cc] = v;
+    updateCell(cc, data[cc]);
   }
 
   opcodeEl.innerHTML = `${o} | ${mC} ${mB} ${mA} | ${opName} (${op})`;
@@ -112,7 +142,9 @@ function step() {
   bEl.innerHTML = `${b} (${bb})`;
   cEl.innerHTML = `${c} (${cc})`;
 
-  index += num;
+  if (!jumped) {
+    index += num;
+  }
 
   return data[index] !== 99;
 }
@@ -124,7 +156,7 @@ function run() {
       clearInterval(t);
     }
   }
-  t = setInterval(runStep, 250);
+  t = setInterval(runStep, STEP_MS);
 }
 
 function process(data_) {
