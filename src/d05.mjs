@@ -1,6 +1,6 @@
-const fs = require('fs');
-const assert = require('assert');
-const { runProgram, getInputN, log } = require('./intcode');
+import fs from 'fs';
+import assert from 'assert';
+import { runProgram, getInputN, log } from './intcode.mjs';
 
 const in1 = getInputN(1);
 const in5 = getInputN(5);

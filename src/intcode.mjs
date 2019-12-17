@@ -10,20 +10,29 @@ const OPS = {
   99: ['END', 1]
 };
 
+const VALID_MODES = [0, 1];
+
 const VALID_OPS = Object.keys(OPS).map((s) => parseInt(s, 10));
 
-function log(msg) {
+export function log(msg) {
   console.log('LOG:', msg);
 }
 
-function getInputN(n) {
+export function getInputN(n) {
   return function() {
     //console.log('INPUT:', n);
     return n;
   };
 }
 
-function step(p, getInput, log) {
+export function stepProgram(
+  p,
+  getInput,
+  log,
+  highlightCells,
+  updateCellValue,
+  updateStat
+) {
   const data = p.cells;
   const i = p.index;
 
@@ -33,15 +42,33 @@ function step(p, getInput, log) {
 
   const os = ('0000' + o).split('').map((s) => parseInt(s, 10));
   const op = os.pop() + os.pop() * 10;
-  const mA = !!os.pop();
-  const mB = !!os.pop();
-  const mC = !!os.pop();
+  const mA = os.pop();
+  const mB = os.pop();
+  const mC = os.pop();
 
   if (VALID_OPS.indexOf(op) === -1) {
     throw `at index ${i} found unsupported op ${op}!`;
   }
 
+  if (VALID_MODES.indexOf(mA) === -1) {
+    throw `at index ${i} found unsupported mode ${mA} for 1st argument!`;
+  }
+  if (VALID_MODES.indexOf(mB) === -1) {
+    throw `at index ${i} found unsupported mode ${mB} for 2nd argument!`;
+  }
+  if (VALID_MODES.indexOf(mC) === -1) {
+    throw `at index ${i} found unsupported mode ${mC} for 3rd argument!`;
+  }
+
   const [opName, num] = OPS[op];
+
+  if (highlightCells) {
+    const arr = [];
+    for (let x = i; x < i + num; ++x) {
+      arr.push(x);
+    }
+    highlightCells(arr);
+  }
 
   let a = '';
   let b = '';
@@ -52,21 +79,21 @@ function step(p, getInput, log) {
 
   if (num > 1) {
     a = data[i + 1];
-    if (!mA) {
+    if (mA === 0) {
       aa = a;
       a = data[a];
     }
   }
   if (num > 2) {
     b = data[i + 2];
-    if (!mB) {
+    if (mB === 0) {
       bb = b;
       b = data[b];
     }
   }
   if (num > 3) {
     c = data[i + 3];
-    if (!mC) {
+    if (mC === 0) {
       cc = c;
       c = data[c];
     }
@@ -77,12 +104,15 @@ function step(p, getInput, log) {
   if (op === 1) {
     // ADD a + b => c
     data[cc] = a + b;
+    updateCellValue && updateCellValue(cc, data[cc]);
   } else if (op === 2) {
     // MUL a + b => c
     data[cc] = a * b;
+    updateCellValue && updateCellValue(cc, data[cc]);
   } else if (op === 3) {
     // STO a
     data[aa] = getInput();
+    updateCellValue && updateCellValue(aa, data[aa]);
   } else if (op === 4) {
     // OUT a
     log(data[aa]);
@@ -102,35 +132,34 @@ function step(p, getInput, log) {
     // LTH a < b ? 1/0 => c
     const v = a < b ? 1 : 0;
     data[cc] = v;
+    updateCellValue && updateCellValue(cc, data[cc]);
   } else if (op === 8) {
     // EQU a == b ? 1/0 => c
     const v = a === b ? 1 : 0;
     data[cc] = v;
+    updateCellValue && updateCellValue(cc, data[cc]);
   }
-
-  /*console.log(`OP: ${o} | ${mC} ${mB} ${mA} | ${opName} (${op})`);
-  console.log(`A: ${a} (${aa})`);
-  console.log(`B: ${b} (${bb})`);
-  console.log(`C: ${c} (${cc})`);*/
 
   if (!jumped) {
     p.index += num;
   }
 
+  if (updateStat) {
+    updateStat('opcode', `${opName} (${op}) | ${mC} ${mB} ${mA}`);
+    updateStat('index', `${p.index}`);
+    updateStat('a', `${a} (${aa})`);
+    updateStat('b', `${b} (${bb})`);
+    updateStat('c', `${c} (${cc})`);
+  }
+
   return data[p.index] !== 99;
 }
 
-function runProgram(values, getInput, log) {
+export function runProgram(values, getInput, log) {
   const p = {
     index: 0,
     cells: values.slice()
   };
-  while (step(p, getInput, log));
+  while (stepProgram(p, getInput, log));
   return p.cells;
 }
-
-module.exports = {
-  runProgram,
-  getInputN,
-  log
-};
