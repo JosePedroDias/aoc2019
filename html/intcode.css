@@ -1,5 +1,17 @@
 body {
   font-family: sans-serif;
+  padding-top: 30px;
+}
+
+.fixed {
+  background: white;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #aaa;
 }
 
 h1 {
@@ -9,13 +21,37 @@ h1 {
   font-size: 20px;
 }
 
+input[type='number'] {
+  width: 70px;
+  text-align: right;
+}
+
 label {
   font-weight: bold;
+}
+
+button {
+  background: #222;
+  color: white;
+  font-size: 16px;
+  border: 1px solid #000;
+}
+
+.step {
+  margin-left: 70px;
 }
 
 span {
   font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
   display: inline-block;
+}
+
+.stat {
+  display: inline-block;
+}
+
+.memory {
+  margin-top: 20px;
 }
 
 .cell {

@@ -5,28 +5,43 @@
     <link rel="stylesheet" href="intcode.css" />
   </head>
   <body>
-    <h1>intcode interpreter</h1>
-    <input type="file" />
-    <button class="step">STEP</button>
-    <button class="run">RUN</button>
+    <div class="fixed">
+      <h1>intcode interpreter</h1>
+      <label for="">file</label>
+      <input class="file" type="file" />
+
+      <label class="label-step_ms" for="">step duration</label>
+      <input class="step_ms" type="number" min="5" value="25" />ms
+
+      <button class="step">STEP</button>
+      <button class="run">RUN</button>
+
+      <div class="stats">
+        <div class="stat">
+          <label for="">index</label>
+          <span class="index"></span>
+        </div>
+        <div class="stat">
+          <label for="">opcode</label>
+          <span class="opcode"></span>
+        </div>
+        <div class="stat">
+          <label for="">arg 1</label>
+          <span class="a"></span>
+        </div>
+        <div class="stat">
+          <label for="">arg 2</label>
+          <span class="b"></span>
+        </div>
+        <div class="stat"></div>
+          <label for="">arg 3</label>
+          <span class="c"></span>
+        </div>
+      </div>
+    </div>
 
     <div class="memory"></div>
-    <div class="stats">
-      <label for="">INDEX</label>
-      <span class="index"></span>
-      <br />
-      <label for="">OPCODE</label>
-      <span class="opcode"></span>
-      <br />
-      <label for="">A</label>
-      <span class="a"></span>
-      <br />
-      <label for="">B</label>
-      <span class="b"></span>
-      <br />
-      <label for="">C</label>
-      <span class="c"></span>
-    </div>
+
     <script type="module" src="intcode-html.mjs"></script>
   </body>
 </html>
