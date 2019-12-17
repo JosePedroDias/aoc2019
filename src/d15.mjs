@@ -1,8 +1,8 @@
-const fs = require('fs');
-const assert = require('assert');
+import fs from 'fs';
+import assert from 'assert';
 
 function main() {
-  const file = fs.readFileSync('input/13.txt').toString();
+  const file = fs.readFileSync('input/15.txt').toString();
   const lines = file.split('\n');
 }
 

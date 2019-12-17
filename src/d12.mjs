@@ -1,6 +1,8 @@
-const fs = require('fs');
-const assert = require('assert');
-const deepEqual = require('deep-equal');
+import fs from 'fs';
+import assert from 'assert';
+import deepEqual from 'deep-equal';
+
+const { combinations } = require('./utils');
 
 const STEPS = 1000;
 
@@ -16,19 +18,6 @@ function _(n) {
     return ' ' + n;
   }
   return n;
-}
-
-// order being irrelevant
-function combinations(n) {
-  const arr = [];
-  for (let i = 0, j; i < n; ++i) {
-    for (j = 0; j < n; ++j) {
-      if (i !== j) {
-        arr.push([i, j]);
-      }
-    }
-  }
-  return arr;
 }
 
 function step(ents, combs) {

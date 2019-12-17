@@ -65,16 +65,16 @@ runs the tests and computes the answers of day `day`
 | 05  | `**`  | Sunny with a Chance of Asteroids (intcode 2: i/o, modes) | js   |
 | 06  | `__`  | Universal Orbit Map (tree)                               | js   |
 | 07  | `__`  | Amplification Circuit (intcode 3:?)                      | js   |
-| 08  | `**`  | Space Image Format (decode layer of images)              | js   |
+| 08  | `**`  | Space Image Format (decode layer of images)              | rust |
 | 09  | `__`  | Sensor Boost (intcode 4:?)                               | js   |
 | 10  | `*_`  | Monitoring Station                                       | js   |
-| 11  | `__`  | Space Police                                             | js   |
+| 11  | `__`  | Space Police (intcode 5:?)                               | js   |
 | 12  | `__`  | The N-Body Problem                                       | js   |
-| 13  | `__`  | Care Package (intcode)                                   | js   |
+| 13  | `__`  | Care Package (intcode 6:?)                               | js   |
 | 14  | `__`  | Space Stoichiometry                                      | js   |
-| 15  | `__`  | Oxygen System (intcode)                                  | js   |
+| 15  | `__`  | Oxygen System (intcode 7:?)                              | js   |
 | 16  | `__`  | Flawed Frequency Transmission                            | js   |
-| 17  | `__`  | ?                                                        | js   |
+| 17  | `__`  | Set and Forget                                           | js   |
 | 18  | `__`  | ?                                                        | js   |
 | 19  | `__`  | ?                                                        | js   |
 | 20  | `__`  | ?                                                        | js   |

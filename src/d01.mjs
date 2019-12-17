@@ -1,3 +1,6 @@
+import fs from 'fs';
+import assert from 'assert';
+
 function fuel1(v) {
   return Math.floor(v / 3) - 2;
 }
@@ -22,9 +25,6 @@ function clone(o) {
 function sum(arr) {
   return arr.reduce((prev, v) => v + prev, 0);
 }
-
-const fs = require('fs');
-const assert = require('assert');
 
 function main() {
   const file = fs.readFileSync('input/01.txt').toString();

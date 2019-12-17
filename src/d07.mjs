@@ -1,6 +1,6 @@
-const fs = require('fs');
-const assert = require('assert');
-const { runProgram } = require('./intcode');
+import fs from 'fs';
+import assert from 'assert';
+import { runProgram } from './intcode';
 
 function run(prog, a, b, c, d, e) {
   let iA = undefined;
