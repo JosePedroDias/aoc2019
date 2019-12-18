@@ -1,4 +1,4 @@
-import { stepProgram, log } from '../src/intcode.mjs';
+import { createProgram, stepProgram, log } from '../src/intcode.mjs';
 
 function q(s) {
   return document.querySelector(s);
@@ -17,6 +17,7 @@ const memoryEl = q('.memory');
 const statEls = {
   index: q('.index'),
   opcode: q('.opcode'),
+  offset: q('.offset'),
   a: q('.a'),
   b: q('.b'),
   c: q('.c')
@@ -89,10 +90,7 @@ function process(data_) {
 
   repeatInput = undefined;
   cells = [];
-  p = {
-    index: 0,
-    cells: data
-  };
+  p = createProgram(data);
 
   memoryEl.innerHTML = '';
 

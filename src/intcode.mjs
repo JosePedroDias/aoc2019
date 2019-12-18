@@ -7,10 +7,26 @@ const OPS = {
   6: ['JIF', 3],
   7: ['LTH', 4],
   8: ['EQU', 4],
-  99: ['END', 1]
+  9: ['RBO', 2],
+  99: ['HALT', 1]
 };
 
-const VALID_MODES = [0, 1];
+const OP_ADD = 1;
+const OP_MUL = 2;
+const OP_STO = 3;
+const OP_OUT = 4;
+const OP_JIT = 5;
+const OP_JIF = 6;
+const OP_LTH = 7;
+const OP_EQU = 8;
+const OP_RBO = 9;
+const OP_HALT = 99;
+
+const MODE_POSITION = 0;
+const MODE_IMMEDIATE = 1;
+const MODE_RELATIVE = 2;
+
+const VALID_MODES = [MODE_POSITION, MODE_IMMEDIATE, MODE_RELATIVE];
 
 const VALID_OPS = Object.keys(OPS).map((s) => parseInt(s, 10));
 
@@ -23,6 +39,13 @@ export function getInputN(n) {
     //console.log('INPUT:', n);
     return n;
   };
+}
+
+export function updateStat(st, v) {
+  if (st === 'opcode') {
+    console.log('');
+  }
+  console.log(`${st}: ${v}`);
 }
 
 export function stepProgram(
@@ -79,65 +102,80 @@ export function stepProgram(
 
   if (num > 1) {
     a = data[i + 1];
-    if (mA === 0) {
+    if (mA === MODE_POSITION) {
       aa = a;
       a = data[a];
-    }
+    } else if (mA === MODE_RELATIVE) {
+      aa = a;
+      a = data[a + p.relBase];
+    } // else immediate
   }
   if (num > 2) {
     b = data[i + 2];
-    if (mB === 0) {
+    if (mB === MODE_POSITION) {
       bb = b;
       b = data[b];
+    } else if (mB === MODE_RELATIVE) {
+      bb = b;
+      b = data[b + p.relBase];
     }
   }
   if (num > 3) {
     c = data[i + 3];
-    if (mC === 0) {
+    if (mC === MODE_POSITION) {
       cc = c;
       c = data[c];
+    } else if (mC === MODE_RELATIVE) {
+      cc = c;
+      c = data[c + p.relBase];
     }
   }
 
   let jumped = false;
 
-  if (op === 1) {
+  if (op === OP_ADD) {
     // ADD a + b => c
-    data[cc] = a + b;
-    updateCellValue && updateCellValue(cc, data[cc]);
-  } else if (op === 2) {
-    // MUL a + b => c
-    data[cc] = a * b;
-    updateCellValue && updateCellValue(cc, data[cc]);
-  } else if (op === 3) {
+    const v = a + b;
+    data[cc] = v;
+    updateCellValue && updateCellValue(cc, v);
+  } else if (op === OP_MUL) {
+    // MUL a * b => c
+    const v = a * b;
+    data[cc] = v;
+    updateCellValue && updateCellValue(cc, v);
+  } else if (op === OP_STO) {
     // STO a
-    data[aa] = getInput();
-    updateCellValue && updateCellValue(aa, data[aa]);
-  } else if (op === 4) {
+    const v = getInput();
+    data[aa] = v;
+    updateCellValue && updateCellValue(aa, v);
+  } else if (op === OP_OUT) {
     // OUT a
     log(data[aa]);
-  } else if (op === 5) {
+  } else if (op === OP_JIT) {
     // JIT a b
     if (a) {
       p.index = b;
       jumped = true;
     }
-  } else if (op === 6) {
+  } else if (op === OP_JIF) {
     // JIF a b
     if (!a) {
       p.index = b;
       jumped = true;
     }
-  } else if (op === 7) {
+  } else if (op === OP_LTH) {
     // LTH a < b ? 1/0 => c
     const v = a < b ? 1 : 0;
     data[cc] = v;
-    updateCellValue && updateCellValue(cc, data[cc]);
-  } else if (op === 8) {
+    updateCellValue && updateCellValue(cc, v);
+  } else if (op === OP_EQU) {
     // EQU a == b ? 1/0 => c
     const v = a === b ? 1 : 0;
     data[cc] = v;
-    updateCellValue && updateCellValue(cc, data[cc]);
+    updateCellValue && updateCellValue(cc, v);
+  } else if (op === OP_RBO) {
+    // RBO a => relBase += a
+    p.relBase += a;
   }
 
   if (!jumped) {
@@ -145,21 +183,40 @@ export function stepProgram(
   }
 
   if (updateStat) {
-    updateStat('opcode', `${opName} (${op}) | ${mC} ${mB} ${mA}`);
+    updateStat('opcode', `${opName} (${op}) | modes:${mA}${mB}${mC}`);
+    updateStat('offset', `${p.relBase}`);
     updateStat('index', `${p.index}`);
     updateStat('a', `${a} (${aa})`);
     updateStat('b', `${b} (${bb})`);
     updateStat('c', `${c} (${cc})`);
   }
 
-  return data[p.index] !== 99;
+  return data[p.index] !== OP_HALT;
 }
 
-export function runProgram(values, getInput, log) {
-  const p = {
+export function createProgram(values, extendMemory) {
+  let mem = values.slice();
+
+  // extend memory to 11x its original source code, zero initializing the remaining 10x
+  if (extendMemory) {
+    let mem2 = new Array(mem.length * 10).fill(0);
+    mem = mem.concat(mem2);
+  }
+
+  return {
     index: 0,
-    cells: values.slice()
+    relBase: 0,
+    cells: mem
   };
-  while (stepProgram(p, getInput, log));
+}
+
+export function runProgram(
+  values,
+  { getInput, log, highlightCells, updateCellValue, updateStat, extendMemory }
+) {
+  const p = createProgram(values, extendMemory);
+  while (
+    stepProgram(p, getInput, log, highlightCells, updateCellValue, updateStat)
+  );
   return p.cells;
 }

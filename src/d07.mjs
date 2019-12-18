@@ -1,7 +1,6 @@
-import fs from 'fs';
 import assert from 'assert';
 import { runProgram } from './intcode.mjs';
-import { permutations5 } from './utils.mjs';
+import { loadFileToString, permutations5 } from './utils.mjs';
 
 function run(prog, a, b, c, d, e) {
   let incA = 0;
@@ -28,9 +27,8 @@ function run(prog, a, b, c, d, e) {
   // d, outC...
   // e?
 
-  runProgram(
-    prog.slice(),
-    () => {
+  runProgram(prog.slice(), {
+    getInput: () => {
       const v = iA;
       if (!incA) {
         ++incA;
@@ -38,14 +36,13 @@ function run(prog, a, b, c, d, e) {
       }
       return v;
     },
-    (v) => {
+    log: (v) => {
       oA = v;
     }
-  );
+  });
 
-  runProgram(
-    prog.slice(),
-    () => {
+  runProgram(prog.slice(), {
+    getInput: () => {
       const v = iB;
       if (!incB) {
         ++incB;
@@ -53,14 +50,13 @@ function run(prog, a, b, c, d, e) {
       }
       return v;
     },
-    (v) => {
+    log: (v) => {
       oB = v;
     }
-  );
+  });
 
-  runProgram(
-    prog.slice(),
-    () => {
+  runProgram(prog.slice(), {
+    getInput: () => {
       const v = iC;
       if (!incC) {
         ++incC;
@@ -68,14 +64,13 @@ function run(prog, a, b, c, d, e) {
       }
       return v;
     },
-    (v) => {
+    log: (v) => {
       oC = v;
     }
-  );
+  });
 
-  runProgram(
-    prog.slice(),
-    () => {
+  runProgram(prog.slice(), {
+    getInput: () => {
       const v = iD;
       if (!incD) {
         ++incD;
@@ -83,14 +78,13 @@ function run(prog, a, b, c, d, e) {
       }
       return v;
     },
-    (v) => {
+    log: (v) => {
       oD = v;
     }
-  );
+  });
 
-  runProgram(
-    prog.slice(),
-    () => {
+  runProgram(prog.slice(), {
+    getInput: () => {
       const v = iE;
       if (!incE) {
         ++incE;
@@ -98,10 +92,10 @@ function run(prog, a, b, c, d, e) {
       }
       return v;
     },
-    (v) => {
+    log: (v) => {
       oE = v;
     }
-  );
+  });
 
   return oE;
 }
@@ -113,14 +107,13 @@ function runTestProgram(s, a, b, c, d, e) {
 }
 
 function main() {
-  const s = fs.readFileSync('input/07.txt').toString();
-  const lines = s.split(',');
-  const prog = lines.map((v) => parseInt(v, 10));
+  const s = loadFileToString('input/07.txt');
+  const prog = s.split(',').map((v) => parseInt(v, 10));
 
   let max = 0;
   const inputs = permutations5(5);
   for (let [a, b, c, d, e] of inputs) {
-    const v = run(prog, 4, 3, 2, 1, 0);
+    const v = run(prog, a, b, c, d, e);
     if (v > max) {
       max = v;
     }

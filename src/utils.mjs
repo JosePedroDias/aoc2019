@@ -1,3 +1,9 @@
+import fs from 'fs';
+
+export function loadFileToString(path) {
+  return fs.readFileSync(path).toString();
+}
+
 // permutation - order is important
 export function permutations5(n) {
   let i, j, k, l, m;

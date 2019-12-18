@@ -56,33 +56,33 @@ runs the tests and computes the answers of day `day`
 
 ## EXERCISES
 
-| day | stars | title                                                    | lang |
-| --- | ----- | -------------------------------------------------------- | ---- |
-| 01  | `**`  | The Tyranny of the Rocket Equation (fuel operations)     | rust |
-| 02  | `**`  | 1202 Program Alarm (intcode add, mul)                    | rust |
-| 03  | `**`  | Crossed Wires (manhattan distance on 2 wires)            | rust |
-| 04  | `**`  | Secure Container (password rules)                        | rust |
-| 05  | `**`  | Sunny with a Chance of Asteroids (intcode 2: i/o, modes) | js   |
-| 06  | `__`  | Universal Orbit Map (tree)                               | js   |
-| 07  | `__`  | Amplification Circuit (intcode 3:?)                      | js   |
-| 08  | `**`  | Space Image Format (decode layer of images)              | rust |
-| 09  | `__`  | Sensor Boost (intcode 4:?)                               | js   |
-| 10  | `*_`  | Monitoring Station                                       | js   |
-| 11  | `__`  | Space Police (intcode 5:?)                               | js   |
-| 12  | `__`  | The N-Body Problem                                       | js   |
-| 13  | `__`  | Care Package (intcode 6:?)                               | js   |
-| 14  | `__`  | Space Stoichiometry                                      | js   |
-| 15  | `__`  | Oxygen System (intcode 7:?)                              | js   |
-| 16  | `__`  | Flawed Frequency Transmission                            | js   |
-| 17  | `__`  | Set and Forget                                           | js   |
-| 18  | `__`  | ?                                                        | js   |
-| 19  | `__`  | ?                                                        | js   |
-| 20  | `__`  | ?                                                        | js   |
-| 21  | `__`  | ?                                                        | js   |
-| 22  | `__`  | ?                                                        | js   |
-| 23  | `__`  | ?                                                        | js   |
-| 24  | `__`  | ?                                                        | js   |
-| 25  | `__`  | ?                                                        | js   |
+| day | stars | title                                                     | lang |
+| --- | ----- | --------------------------------------------------------- | ---- |
+| 01  | `**`  | The Tyranny of the Rocket Equation (fuel operations)      | rust |
+| 02  | `**`  | 1202 Program Alarm (intcode add, mul)                     | rust |
+| 03  | `**`  | Crossed Wires (manhattan distance on 2 wires)             | rust |
+| 04  | `**`  | Secure Container (password rules)                         | rust |
+| 05  | `**`  | Sunny with a Chance of Asteroids (intcode 2: i/o, modes)  | js   |
+| 06  | `__`  | Universal Orbit Map (tree)                                | js   |
+| 07  | `*_`  | Amplification Circuit (intcode 3:dynamic io, perms, loop) | js   |
+| 08  | `**`  | Space Image Format (decode layer of images)               | rust |
+| 09  | `__`  | Sensor Boost (intcode 4:?)                                | js   |
+| 10  | `*_`  | Monitoring Station                                        | js   |
+| 11  | `__`  | Space Police (intcode 5:?)                                | js   |
+| 12  | `__`  | The N-Body Problem                                        | js   |
+| 13  | `__`  | Care Package (intcode 6:?)                                | js   |
+| 14  | `__`  | Space Stoichiometry                                       | js   |
+| 15  | `__`  | Oxygen System (intcode 7:?)                               | js   |
+| 16  | `__`  | Flawed Frequency Transmission                             | js   |
+| 17  | `__`  | Set and Forget                                            | js   |
+| 18  | `__`  | ?                                                         | js   |
+| 19  | `__`  | ?                                                         | js   |
+| 20  | `__`  | ?                                                         | js   |
+| 21  | `__`  | ?                                                         | js   |
+| 22  | `__`  | ?                                                         | js   |
+| 23  | `__`  | ?                                                         | js   |
+| 24  | `__`  | ?                                                         | js   |
+| 25  | `__`  | ?                                                         | js   |
 
 ## Intcode Interpreter
 
