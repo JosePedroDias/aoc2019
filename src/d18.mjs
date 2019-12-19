@@ -76,12 +76,12 @@ function findEntrance(map, W, H) {
   }
 }
 
-function logWay({ m, k, p, h }) {
-  return `k:${k.length}`;
-}
-
 function logWays(ws) {
-  return `(${ws.length}):` + ws.map(logWay).join(',');
+  const max = Math.max.apply(
+    Math,
+    ws.map((w) => w.k.length)
+  );
+  return `(${ws.length}): ${max}`;
 }
 
 function neighbours(map, keys, p) {
@@ -94,8 +94,8 @@ function neighbours(map, keys, p) {
 
   return ps
     .map((p) => ({ p: p, v: map[p[1]][p[0]] }))
-    .filter((o) => !isWall(o.v))
-    .filter((o) => isDoor(o.v) && haveKeyTo(o.v, keys));
+    .filter((o) => !isWall(o.v));
+  //.filter((o) => isDoor(o.v) && haveKeyTo(o.v, keys));
 }
 
 function mapToString(map) {
@@ -117,7 +117,19 @@ function solve(s) {
     ways.forEach(({ m, k, p, h }) => {
       const ns = neighbours(m, k, p);
       ns.forEach(({ p, v }) => {
-        if (isKey(v)) {
+        if (isDoor(v)) {
+          ways2.push({
+            m: immutableChangeMap(m, p, '.'),
+            k: cloneArray(k),
+            p: p,
+            h: immutableAddToArray(h, p)
+          });
+
+          if (k.length === numKeys) {
+            const w = ways2[ways2.length - 1];
+            throw w;
+          }
+        } else if (isKey(v)) {
           ways2.push({
             m: immutableChangeMap(m, p, '.'),
             k: immutableAddToArray(k, v),
@@ -146,10 +158,11 @@ function solve(s) {
     let i = 0;
     while (true) {
       ways = step(ways);
-      console.log(++i, ways.length);
-      //console.log(logWays(ways));
+      //console.log(++i, ways.length);
+      console.log(i++, logWays(ways));
     }
   } catch (w) {
+    console.log(mapToString(w.m));
     return w;
   }
 }
@@ -176,7 +189,7 @@ function test() {
     assert.equal(w.h.length, 8);
   })();
 
-  /*(() => {
+  (() => {
     const s = `########################
 #f.D.E.e.C.b.A.@.a.B.c.#
 ######################.#
@@ -186,7 +199,7 @@ function test() {
     //console.log('k', w.k);
     //console.log('h', w.h);
     assert.equal(w.h.length, 8);
-  })();*/
+  })();
 }
 
 test();
