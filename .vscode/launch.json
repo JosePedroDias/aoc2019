@@ -5,7 +5,7 @@
       "type": "node",
       "request": "launch",
       "name": "Launch node.js",
-      "program": "${workspaceFolder}/src/d18.mjs",
+      "program": "${workspaceFolder}/src/d22.mjs",
       "runtimeExecutable": " /home/jsad/.nvm/versions/node/v13.3.0/bin/node",
       "skipFiles": ["<node_internals>/**"]
     },

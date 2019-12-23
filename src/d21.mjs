@@ -2,7 +2,7 @@ import fs from 'fs';
 import assert from 'assert';
 
 function main() {
-  const file = fs.readFileSync('input/19.txt').toString();
+  const file = fs.readFileSync('input/21.txt').toString();
   const lines = file.split('\n');
 }
 
